@@ -9,26 +9,46 @@ int main(void) {
     ir_uart_init();
 }
 
-void transmit(position) {
+void transmit(int[] position) {
     // Transmit position
+    char transmit_char = encode_position(position)
+    ir_uart_putc(transmit_char);
 }
 
-void receive(position) {
+void receive() {
     // Receive position
+    char received = ir_uart_getc();
+    int[] position = decode_received(received);
 }
 
-void transmit_laser(position, direction) {
+void transmit_laser(int[] position, char direction) {
     // Transmit shot
 }
 
-void receive_shot(positon, direction) {
+void receive_shot(int[] positon, char direction) {
     // Receive laser
 }
 
 char encode_position(int[] position) {
     // Encode the position so we can transmit
+    int x = position[0];
+    int y = position[1];
+    return (x+(7*y))
 }
 
-int[] decode_position(char input) {
+int[] decode_received(char input) {
     // Decode the character received
+    if (input < 35) {
+        // Do stuff
+        int count = 0;
+        while(input > 6 && input > -1) {
+            input = input - 7;
+            count += 1;
+        }
+        return [input, count];
+    }
+}
+
+char encode_pos_laser(int[] position, char direction) {
+    // Encode the position so we can transmit
 }
