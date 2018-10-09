@@ -22,17 +22,22 @@ game.o: game.c ../../drivers/avr/system.h
 system.o: ../../drivers/avr/system.c ../../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+disp.o: disp.c disp.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+nav.o: nav.c nav.h
+	$(CC) -c $(CFLAGS) $< -o $@
 
 
 # Link: create ELF output file from object files.
-game.out: game.o system.o
+game.out: game.o system.o disp.o nav.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 
 
 # Target: clean project.
 .PHONY: clean
-clean: 
+clean:
 	-$(DEL) *.o *.out *.hex
 
 

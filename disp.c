@@ -2,6 +2,7 @@
 #include "disp.h"
 
 #define DISPLAY_TIME 100 //time to display a player for
+#define DISPLAY_LASER_TIME 50 // time to display a laser for
 #define OUTPUT_HIGH 1
 #define MAX_LASERS 10
 #define SCREEN_WIDTH TINYGL_WIDTH
@@ -39,9 +40,9 @@ void disp_add_enemy(int[2] position)
 void disp_add_laser(int[3] laser)
 {
     for (int i=0; i < MAX_LASERS;i++) {
-        //if laser is gone, display new laser
+        //if laser is no longer displayed, add new laser details
         if (laserPool[i].counter == 0) {
-            laserPool[i].counter = DISPLAY_TIME;
+            laserPool[i].counter = DISPLAY_LASER_TIME;
             laserPool[i].x = laser[0];
             laserPool[i].y = laser[1];
             laserPool[i].direction = laser[2];
