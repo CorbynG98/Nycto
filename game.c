@@ -33,7 +33,7 @@ void transmit_laser(int position[2], int direction) {
 }
 
 bool rec_got_data(void) {
-    return false;
+    return true;
 }
 
 char rec_get_data(void) {
@@ -115,6 +115,9 @@ int main (void)
             }
         }
         if (nav_shoot()) {
+            //
+            int laser[3] = {position[0], position[1], direction};
+            disp_add_laser(laser);
             transmit_laser(position, direction);
         }
 

@@ -2,7 +2,7 @@
 #include "disp.h"
 
 #define DISPLAY_RATE 500 //should be the same as PACER_RATE
-#define DISPLAY_TIME 20 //time to display a player for
+#define DISPLAY_TIME 50 //time to display a player for
 #define DISPLAY_LASER_TIME 50 // time to display a laser for
 #define OUTPUT_HIGH 1
 #define MAX_LASERS 10
@@ -14,7 +14,6 @@ Player self = {0, 0, 0};
 Player enemy = {0, 0, 0};
 
 static char dispDebugChar = 'D';
-static int flip = 0;
 
 char getDebugChar(void) {
     return dispDebugChar;
@@ -86,12 +85,13 @@ void disp_laser(Laser laser)
 /** deals with displaying current instances */
 void disp_update(void)
 {
+    display_clear ();
+
     //draw players
-    if (self.counter > flip) {
+    if (self.counter > 0) {
         tinygl_pixel_set(tinygl_point (self.x, self.y), OUTPUT_HIGH);
         dispDebugChar = self.counter + 'C';
         self.counter--;
-        flip += 1;
     }
     if (enemy.counter > 0) {
         tinygl_pixel_set(tinygl_point (enemy.x, enemy.y), OUTPUT_HIGH);
@@ -108,5 +108,6 @@ void disp_update(void)
     }
 
     //refresh frame
+
     tinygl_update ();
 }
