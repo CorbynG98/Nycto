@@ -20,13 +20,13 @@ typedef struct player_s {
 void disp_init(void);
 
 /** display self for a time */
-void disp_add_self(int[2] position);
+void disp_add_self(int position[2]);
 
 /** display the enemy for a time */
-void disp_add_enemy(int[2] position);
+void disp_add_enemy(int position[2]);
 
 /** creates new laser */
-void disp_add_laser(int[3] laser);
+void disp_add_laser(int laser[3]);
 
 /** Displays a laser for a frame*/
 void disp_laser(Laser laser);

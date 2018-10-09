@@ -2,8 +2,8 @@
 #include "stdbool.h"
 #include "navswitch.h"
 
+/** Initialise and check what button was pressed. */
 bool nav_getminput(char* prev_dir) {
-    // Initialise and check what button was pressed.
     system_init ();
     navswitch_init ();
     if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
@@ -22,15 +22,15 @@ bool nav_getminput(char* prev_dir) {
     return false;
 }
 
-bool nav_move(int[] position, char* prev_dir) {
-    // Attempt to move the player in the direction they chose
-    if (*prev_dir = 'N') {
+/** Attempt to move the player in the direction they chose */
+bool nav_move(int position[], char* prev_dir) {
+    if (*prev_dir == 'N') {
         position[0] += 1;
-    } else if (*prev_dir = 'E') {
+    } else if (*prev_dir == 'E') {
         position[1] -= 1;
-    } else if (*prev_dir = 'S') {
+    } else if (*prev_dir == 'S') {
         position[0] -= 1;
-    } else if (*prev_dir = 'W') {
+    } else if (*prev_dir == 'W') {
         position[1] += 1;
     }
     return true;
@@ -51,15 +51,15 @@ bool nav_move(int[] position, char* prev_dir) {
 
 } */
 
-bool nav_shoot(position, direction) {
-    // Return true if the player tried to shoot.
+/** Return true if the player tried to shoot. */
+bool nav_shoot(void) {
     if (navswitch_push_event_p (NAVSWITCH_PUSH))
         return true;
     return false;
 }
 
-bool nav_hitwall(int[] position, char move_dir) {
-    // Check if the player is trying to move into a wall.
+/** Check if the player is trying to move into a wall. */
+bool nav_hitwall(int position[], char move_dir) {
     if (move_dir == 'N') {
         if (position[1] == 0)
             return true;

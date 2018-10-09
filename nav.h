@@ -5,12 +5,12 @@
 bool nav_getminput(char* prev_dir);
 
 /** Attempt to move the player in the direction they chose */
-bool nav_move(int[] position, char* prev_dir);
+bool nav_move(int position[], char* prev_dir);
 
 /** Return true if the player tried to shoot. */
-bool nav_shoot(position, direction);
+bool nav_shoot(void);
 
 /** Check if the player is trying to move into a wall. */
-bool nav_hitwall(int[] position, char move_dir);
+bool nav_hitwall(int position[], char move_dir);
 
 #endif
