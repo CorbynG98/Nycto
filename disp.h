@@ -1,6 +1,9 @@
 #ifndef DISP_H
 #define DISP_H
 
+/** debug function*/
+char getDebugChar(void);
+
 /** temporary laser display details */
 typedef struct laser_s {
     int counter;

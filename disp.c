@@ -2,7 +2,7 @@
 #include "disp.h"
 
 #define DISPLAY_RATE 500 //should be the same as PACER_RATE
-#define DISPLAY_TIME 1 //time to display a player for
+#define DISPLAY_TIME 20 //time to display a player for
 #define DISPLAY_LASER_TIME 50 // time to display a laser for
 #define OUTPUT_HIGH 1
 #define MAX_LASERS 10
@@ -13,12 +13,19 @@ Laser laserPool[MAX_LASERS];
 Player self = {0, 0, 0};
 Player enemy = {0, 0, 0};
 
+static char dispDebugChar = 'D';
+static int flip = 0;
+
+char getDebugChar(void) {
+    return dispDebugChar;
+}
+
 /** sets screen off */
 void disp_init(void)
 {
     tinygl_init (DISPLAY_RATE);
-    self.counter = DISPLAY_TIME;
-    enemy.counter = DISPLAY_TIME;
+    //self.counter = DISPLAY_TIME;
+    //enemy.counter = DISPLAY_TIME;
 }
 
 /** display self for a time */
@@ -40,6 +47,7 @@ void disp_add_enemy(int position[2])
 /** creates new laser */
 void disp_add_laser(int laser[3])
 {
+    dispDebugChar = 'Z';
     for (int i=0; i < MAX_LASERS;i++) {
         //if laser is no longer displayed, add new laser details
         if (laserPool[i].counter == 0) {
@@ -79,9 +87,11 @@ void disp_laser(Laser laser)
 void disp_update(void)
 {
     //draw players
-    if (self.counter > 0) {
+    if (self.counter > flip) {
         tinygl_pixel_set(tinygl_point (self.x, self.y), OUTPUT_HIGH);
+        dispDebugChar = self.counter + 'C';
         self.counter--;
+        flip += 1;
     }
     if (enemy.counter > 0) {
         tinygl_pixel_set(tinygl_point (enemy.x, enemy.y), OUTPUT_HIGH);
@@ -91,6 +101,7 @@ void disp_update(void)
     //draw lasers
     for (int i=0; i < MAX_LASERS;i++) {
         if (laserPool[i].counter > 0) {
+            dispDebugChar = 'K';
             disp_laser(laserPool[i]);
             laserPool[i].counter--;
         }

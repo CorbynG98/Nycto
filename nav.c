@@ -4,8 +4,6 @@
 
 /** Initialise and check what button was pressed. */
 bool nav_getminput(char* prev_dir) {
-    system_init ();
-    navswitch_init ();
     if (navswitch_push_event_p (NAVSWITCH_NORTH)) {
         *prev_dir = 'N';
         return true;
@@ -25,13 +23,13 @@ bool nav_getminput(char* prev_dir) {
 /** Attempt to move the player in the direction they chose */
 bool nav_move(int position[], char* prev_dir) {
     if (*prev_dir == 'N') {
-        position[0] += 1;
-    } else if (*prev_dir == 'E') {
         position[1] -= 1;
+    } else if (*prev_dir == 'E') {
+        position[0] += 1;
     } else if (*prev_dir == 'S') {
-        position[0] -= 1;
-    } else if (*prev_dir == 'W') {
         position[1] += 1;
+    } else if (*prev_dir == 'W') {
+        position[0] -= 1;
     }
     return true;
 }
@@ -40,11 +38,11 @@ bool nav_move(int position[], char* prev_dir) {
     // Calculate the direction the player has moved in.
     if (last_pos[0] - position[0] > 0) {
         return 'E';
-    } else if (last_pos[0] - positon[0] < 0) {
+    } else if (last_pos[0] - position[0] < 0) {
         return 'W';
-    } else if (last_pos[1] - positon[1] > 0) {
+    } else if (last_pos[1] - position[1] > 0) {
         return 'N';
-    } else if (last_pos[1] - positon[1] < 0) {
+    } else if (last_pos[1] - position[1] < 0) {
         return 'S';
     }
     return NULL;
@@ -61,16 +59,16 @@ bool nav_shoot(void) {
 /** Check if the player is trying to move into a wall. */
 bool nav_hitwall(int position[], char move_dir) {
     if (move_dir == 'N') {
-        if (position[1] == 0)
+        if (position[1] <= 0)
             return true;
     } else if (move_dir == 'S') {
-        if (position[1] == 4)
+        if (position[1] >= 6)
             return true;
     } else if (move_dir == 'E') {
-        if (position[0] == 6)
+        if (position[0] >= 4)
             return true;
     } else if (move_dir == 'W') {
-        if (position[0] == 0)
+        if (position[0] <= 0)
             return true;
     }
     return false;

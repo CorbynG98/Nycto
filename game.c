@@ -3,12 +3,14 @@
 #include "tinygl.h"
 #include "ir_uart.h"
 #include "pacer.h"
+#include "../fonts/font5x7_1.h"
 #include <stdbool.h>
 
 #include "disp.h"
 #include "nav.h"
 
 #define PACER_RATE 500
+#define MESSAGE_RATE 10
 
 void game_init(int position[2], char* direction) {
     //setup position
@@ -19,11 +21,15 @@ void game_init(int position[2], char* direction) {
 
 //temporary transceive placeholders
 void transmit_pos(int position[2]) {
-    ir_uart_putc(position[0]);
+    if (position[0] == 8) {
+        position[1] = 9;
+    }
 }
 
 void transmit_laser(int position[2], int direction) {
-    ir_uart_putc(position[0]+direction);
+    if (position[0] == 8) {
+        position[1] = 9 + direction;
+    }
 }
 
 bool rec_got_data(void) {
@@ -53,6 +59,13 @@ void rec_get_laser(int laser[3], char data) {
     }
 }
 
+void display_character (char character)
+{
+    char buffer[2];
+    buffer[0] = character;
+    buffer[1] = '\0';
+    tinygl_text (buffer);
+}
 
 int main (void)
 {
@@ -60,6 +73,7 @@ int main (void)
     bool got_minput = false;
     char direction;
 
+    static char debugCharacter = 'A';
     //int health = 3;
 
     //all the usual inits
@@ -71,6 +85,10 @@ int main (void)
     pacer_init (PACER_RATE);
     disp_init();
 
+    //debug
+    tinygl_font_set (&font5x7_1);
+    tinygl_text_speed_set (MESSAGE_RATE);
+
 
 
     while (1)
@@ -78,15 +96,21 @@ int main (void)
         //system upkeep
         pacer_wait();
         navswitch_update();
+        disp_update();
+
+        //debugCharacter = getDebugChar();
 
         //take input and transmit
         got_minput = nav_getminput(&direction);//got movement input, if so changed direction
 
         if (got_minput) {
-            if (nav_hitwall(position, direction)) {//if hit wall
+            debugCharacter = 'M';
+            if (nav_hitwall(position, direction)) {//if player will hit a wall
+                debugCharacter = 'H';
                 transmit_pos(position);
                 disp_add_self(position);
             } else {
+                debugCharacter = 'N';
                 nav_move(position, &direction);
             }
         }
@@ -100,6 +124,7 @@ int main (void)
 
             //store that data
             char data = rec_get_data();
+            debugCharacter = 'G';
 
             //identify data (check if data < 35)
             if (rec_is_enemy(data)) {
@@ -113,6 +138,8 @@ int main (void)
             }
         }
         //do this at required frequency
-        disp_update();
+        if (debugCharacter == 'Z') {
+            display_character (debugCharacter);
+        }
     }
 }
