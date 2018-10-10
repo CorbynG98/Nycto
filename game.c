@@ -9,7 +9,7 @@
 #include "disp.h"
 #include "nav.h"
 
-#define PACER_RATE 500
+#define PACER_RATE 1000
 #define MESSAGE_RATE 10
 
 void game_init(int position[2], char* direction) {
