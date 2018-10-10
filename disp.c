@@ -2,13 +2,12 @@
 #include "disp.h"
 
 #define DISP_RATE 500 //should be the same as PACER_RATE
-#define DISP_TIME 1500 //time to display a player for
-#define DISP_FADER_RESOLUTION 3
+#define DISP_TIME 100 //time to display a player for
 #define DISP_LASER_TIME 50 // time to display a laser for
 #define OUTPUT_HIGH 1
 #define DISP_MAX_LASERS 10
 
-Laser laserPool[MAX_LASERS];
+Laser laserPool[DISP_MAX_LASERS];
 Player self = {0, 0, 0};
 Player enemy = {0, 0, 0};
 
@@ -83,15 +82,11 @@ void disp_laser(Laser laser)
 /** Returns whether an LED should be turned on to establish a fading
  * effect as counter ramps down from max */
 bool fader(int counter, int max) {
-    //unless pacer rate is higher, dimming becomes perceptible flickering above res=3
-    bool answer = true;
-    for (int i=1; i<DISP_FADER_RESOLUTION; i++) {
-        if (counter < (i*max)/DISP_FADER_RESOLUTION) {
-            answer = !(counter % (DISP_FADER_RESOLUTION + 1 - i));
-            break;
-        }
+    if (counter < max/2) {
+        return counter % 2;
+    } else {
+        return true;
     }
-    return answer;
 }
 
 /** deals with displaying current instances */
