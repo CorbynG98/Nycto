@@ -80,6 +80,9 @@ int main (void)
     system_init ();
     navswitch_init ();
 
+    // initialize the ir transmitter and receiver
+    ir_uart_init();
+
     //wait for first button press
     game_init(position, &direction);//game is asymmetric so players start in different places
     pacer_init (PACER_RATE);
