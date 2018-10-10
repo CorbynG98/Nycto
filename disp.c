@@ -1,15 +1,13 @@
 #include "tinygl.h"
 #include "disp.h"
 
-#define DISPLAY_RATE 500 //should be the same as PACER_RATE
-#define DISPLAY_TIME 50 //time to display a player for
-#define DISPLAY_LASER_TIME 50 // time to display a laser for
+#define DISP_RATE 500 //should be the same as PACER_RATE
+#define DISP_TIME 100 //time to display a player for
+#define DISP_LASER_TIME 50 // time to display a laser for
 #define OUTPUT_HIGH 1
-#define MAX_LASERS 10
-#define SCREEN_WIDTH TINYGL_WIDTH
-#define SCREEN_HEIGHT TINYGL_HEIGHT
+#define DISP_MAX_LASERS 10
 
-Laser laserPool[MAX_LASERS];
+Laser laserPool[DISP_MAX_LASERS];
 Player self = {0, 0, 0};
 Player enemy = {0, 0, 0};
 
@@ -22,7 +20,7 @@ char getDebugChar(void) {
 /** sets screen off */
 void disp_init(void)
 {
-    tinygl_init (DISPLAY_RATE);
+    tinygl_init (DISP_RATE);
     //self.counter = DISPLAY_TIME;
     //enemy.counter = DISPLAY_TIME;
 }
@@ -30,7 +28,7 @@ void disp_init(void)
 /** display self for a time */
 void disp_add_self(int position[2])
 {
-    self.counter = DISPLAY_TIME;
+    self.counter = DISP_TIME;
     self.x = position[0];
     self.y = position[1];
 }
@@ -38,7 +36,7 @@ void disp_add_self(int position[2])
 /** display the enemy for a time */
 void disp_add_enemy(int position[2])
 {
-    enemy.counter = DISPLAY_TIME;
+    enemy.counter = DISP_TIME;
     enemy.x = position[0];
     enemy.y = position[1];
 }
@@ -46,11 +44,10 @@ void disp_add_enemy(int position[2])
 /** creates new laser */
 void disp_add_laser(int laser[3])
 {
-    dispDebugChar = 'Z';
-    for (int i=0; i < MAX_LASERS;i++) {
+    for (int i=0; i < DISP_MAX_LASERS;i++) {
         //if laser is no longer displayed, add new laser details
         if (laserPool[i].counter == 0) {
-            laserPool[i].counter = DISPLAY_LASER_TIME;
+            laserPool[i].counter = DISP_LASER_TIME;
             laserPool[i].x = laser[0];
             laserPool[i].y = laser[1];
             laserPool[i].direction = laser[2];
@@ -68,10 +65,10 @@ void disp_laser(Laser laser)
             endy = 0;
             break;
         case 'E':
-            endx = SCREEN_WIDTH;
+            endx = TINYGL_WIDTH;
             break;
         case 'S':
-            endy = SCREEN_HEIGHT;
+            endy = TINYGL_HEIGHT;
             break;
         case 'W':
             endx = 0;
@@ -82,6 +79,16 @@ void disp_laser(Laser laser)
                       OUTPUT_HIGH);
 }
 
+/** Returns whether an LED should be turned on to establish a fading
+ * effect as counter ramps down from max */
+bool fader(int counter, int max) {
+    if (counter < max/2) {
+        return counter % 2;
+    } else {
+        return true;
+    }
+}
+
 /** deals with displaying current instances */
 void disp_update(void)
 {
@@ -89,25 +96,28 @@ void disp_update(void)
 
     //draw players
     if (self.counter > 0) {
-        tinygl_pixel_set(tinygl_point (self.x, self.y), OUTPUT_HIGH);
-        dispDebugChar = self.counter + 'C';
+        if (fader(self.counter, DISP_TIME)) {
+            tinygl_pixel_set(tinygl_point (self.x, self.y), OUTPUT_HIGH);
+        }
         self.counter--;
     }
     if (enemy.counter > 0) {
-        tinygl_pixel_set(tinygl_point (enemy.x, enemy.y), OUTPUT_HIGH);
+        if (fader(enemy.counter, DISP_TIME)) {
+            tinygl_pixel_set(tinygl_point (enemy.x, enemy.y), OUTPUT_HIGH);
+        }
         enemy.counter--;
     }
 
     //draw lasers
-    for (int i=0; i < MAX_LASERS;i++) {
+    for (int i=0; i < DISP_MAX_LASERS;i++) {
         if (laserPool[i].counter > 0) {
-            dispDebugChar = 'K';
-            disp_laser(laserPool[i]);
+            if (fader(laserPool[i].counter, DISP_LASER_TIME)) {
+                disp_laser(laserPool[i]);
+            }
             laserPool[i].counter--;
         }
     }
 
     //refresh frame
-
     tinygl_update ();
 }
