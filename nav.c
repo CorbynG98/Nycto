@@ -1,6 +1,7 @@
 #include "system.h"
 #include "stdbool.h"
 #include "navswitch.h"
+#include "nav.h"
 
 /** Initialise and check what button was pressed. */
 bool nav_getminput(char* prev_dir) {

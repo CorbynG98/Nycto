@@ -6,6 +6,7 @@
 #include "../fonts/font5x7_1.h"
 #include <stdbool.h>
 
+#include "transceive.h"
 #include "disp.h"
 #include "nav.h"
 
@@ -19,6 +20,7 @@ void game_init(int position[2], char* direction) {
     *direction = 'N';
 }
 
+/*
 //temporary transceive placeholders
 void transmit_pos(int position[2]) {
     if (position[0] == 8) {
@@ -58,6 +60,8 @@ void rec_get_laser(int laser[3], char data) {
         laser[2] = 3;//direction 0,1,2,3 => n,e,s,w
     }
 }
+// END TEMP
+*/
 
 void display_character (char character)
 {
@@ -118,7 +122,6 @@ int main (void)
             }
         }
         if (nav_shoot()) {
-            //
             int laser[3] = {position[0], position[1], direction};
             disp_add_laser(laser);
             transmit_laser(position, direction);

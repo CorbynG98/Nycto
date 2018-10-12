@@ -1,64 +1,95 @@
 #include "system.h"
-#include "pacer.h"
-#include "navswitch.h"
 #include "ir_uart.h"
+#include "transceive.h"
 
-void transmit(int[] position) {
+// function declarations
+/*void transmit_pos(int);
+char rec_get_data(void);
+void transmit_laser(int[], char);
+int rec_got_data(void);
+void rec_get_enemy(int[], char);
+void rec_get_laser(int[], char);
+char encode_pos_laser(int[], char);
+char encode_position(int[]);*/
+
+void transmit_pos(int position[])
+{
     // Transmit position
-    char transmit_char = encode_position(position)
+    unsigned char transmit_char = encode_position(position);
     ir_uart_putc(transmit_char);
 }
 
-void receive() {
+char rec_get_data(void)
+{
     // Receive position
-    char received = ir_uart_getc();
-    int[] position = decode_received(received);
+    unsigned char received = ir_uart_getc();
+    return received;
 }
 
-void transmit_laser(int[] position, char direction) {
+void transmit_laser(int position[], char direction) {
     // Transmit shot
+    // Still need todo this will only be like 3 lines :D
+    unsigned char transmit_las_pos = encode_pos_laser(position, direction);
+    ir_uart_putc(transmit_las_pos);
 }
 
-void receive_shot(int[] positon, char direction) {
-    // Receive laser
-}
-
-char encode_position(int[] position) {
-    // Encode the position so we can transmit
-    int x = position[0];
-    int y = position[1];
-    return (x+(7*y))
-}
-
-int[] decode_received(char input) {
-    // Decode the character received
-    if (input == -1)
-        return [-1,-1];
-    else if (input < 35) {
-        // Do stuff
-        int count = 0;
-        while(input > 6 && input > -1) {
-            input = input - 7;
-            count += 1;
-        }
-        return [input, count];
-    } else if (input < 70) {
-        char direction = 'N';
-        int data[3] = decode_received(input - 35) + direction;
-        return data;
-    } else if (input < 105) {
-        char direction = 'E';
-        int data[3] = decode_received(input - (35*2)) + direction;
-    }  else if (input < 105) {
-        char direction = 'S';
-        int data[3] = decode_received(input - (35*3)) + direction;
-    }  else if (input < 105) {
-        char direction = 'W';
-        int data[3] = decode_received(input - (35*4)) + direction;
+int rec_is_enemy(unsigned char input)
+{
+    // Check if the input is only an enemy position without laser
+    if (input < 35) {
+        return 1;
     }
+    return 0;
 }
 
-char encode_pos_laser(int[] position, char direction) {
+int rec_got_data(void) {
+    // Check that the ir device is ready to receive data.
+    return ir_uart_read_ready_p();
+}
+
+void rec_get_enemy(int enemy[], unsigned char input)
+{
+    // decode the position of the character.
+    int count = 0;
+    while(input > 6 && input < 255) {
+        input = input - 7;
+        count += 1;
+    }
+    enemy[0] = input;
+    enemy[1] = count;
+}
+
+void rec_get_laser(int laser[], unsigned char input)
+{
+    // from the input, decode the data so we get the position and the
+    // direction of the laser.
+    int enemy[2] = {0, 0};
+    if (input < 70) {
+        rec_get_enemy(enemy, input - (35*1));
+        laser[0] = enemy[0];
+        laser[1] = enemy[1];
+        laser[2] = 0;
+    } else if (input < 105) {
+        rec_get_enemy(enemy, input - (35*2));
+        laser[0] = enemy[0];
+        laser[1] = enemy[1];
+        laser[2] = 1;
+    }  else if (input < 140) {
+        rec_get_enemy(enemy, input - (35*3));
+        laser[0] = enemy[0];
+        laser[1] = enemy[1];
+        laser[2] = 2;
+    }  else if (input < 175) {
+        rec_get_enemy(enemy, input - (35*4));
+        laser[0] = enemy[0];
+        laser[1] = enemy[1];
+        laser[2] = 3;
+    }
+
+}
+
+char encode_pos_laser(int position[], char direction)
+{
     // Encode the position so we can transmit
     int x = position[0];
     int y = position[1];
@@ -72,18 +103,17 @@ char encode_pos_laser(int[] position, char direction) {
     else if (direction == 'W')
         z = 3;
     else
-        z = -1
+        z = 255;
 
     if (z != -1)
-        return (x+(7*y)) + (35*(z+1))
-    else
-        return -1;
+        return (x+(7*y)) + (35*(z+1));
+    return 255;
 }
 
-/* Do we need to differentiate between a shot transmit /receive and a sole
- * transmission transmit / revceive?
- *
- * I think we can just transmit al lthe data all the time, take the first 6
- * bits as position and the last 2 bits as direction then the function calling
- * it can determine if its a shot or just a wall hit and only use the data
- * it needs to for whatever it detemrines happened. Just a thought. */
+char encode_position(int position[])
+{
+    // Encode the position so we can transmit
+    int x = position[0];
+    int y = position[1];
+    return (x+(7*y));
+}

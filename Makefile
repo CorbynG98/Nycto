@@ -28,7 +28,10 @@ disp.o: disp.c disp.h
 nav.o: nav.c nav.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-#ALL OF THE THINGS
+transceive.o: transceive.c transceive.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+# Make all the built it libraries / devices / stuff
 pio.o: ../../drivers/avr/pio.c ../../drivers/avr/pio.h ../../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
@@ -64,11 +67,10 @@ timer0.o: ../../drivers/avr/timer0.c ../../drivers/avr/bits.h ../../drivers/avr/
 
 prescale.o: ../../drivers/avr/prescale.c ../../drivers/avr/prescale.h ../../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
-#YEP THAT WAS INSANE
 
 
 # Link: create ELF output file from object files.
-game.out: game.o system.o disp.o nav.o pio.o timer.o display.o ledmat.o font.o tinygl.o navswitch.o ir_uart.o usart1.o timer0.o prescale.o pacer.o
+game.out: game.o system.o disp.o nav.o transceive.o pio.o timer.o display.o ledmat.o font.o tinygl.o navswitch.o ir_uart.o usart1.o timer0.o prescale.o pacer.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 
