@@ -10,7 +10,7 @@
 #include "disp.h"
 #include "nav.h"
 
-#define PACER_RATE 500
+#define PACER_RATE 250
 #define MESSAGE_RATE 10
 
 void game_init(int position[2], char* direction) {
@@ -123,7 +123,7 @@ int main (void)
         }
         if (nav_shoot()) {
             int laser[3] = {position[0], position[1], direction};
-            disp_add_laser(laser);
+            disp_add_self_laser(laser);
             transmit_laser(position, direction);
         }
 
@@ -144,7 +144,7 @@ int main (void)
                 int laser[3];
                 // debugCharacter = 'Z';
                 rec_get_laser(laser, data);//convert laser data to three integers
-                disp_add_laser(laser);
+                disp_add_enemy_laser(laser);
             }
         }
         //do this at required frequency

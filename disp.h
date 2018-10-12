@@ -28,8 +28,11 @@ void disp_add_self(int position[2]);
 /** display the enemy for a time */
 void disp_add_enemy(int position[2]);
 
-/** creates new laser */
-void disp_add_laser(int laser[3]);
+/** creates self laser */
+void disp_add_self_laser(int laser[3]);
+
+/** creates enemy laser */
+void disp_add_enemy_laser(int laser[3]);
 
 /** Displays a laser for a frame*/
 void disp_laser(Laser laser);
