@@ -51,8 +51,8 @@ void rec_get_enemy(int enemy[], unsigned char input)
 {
     // decode the position of the character.
     int count = 0;
-    while(input > 6 && input < 255) {
-        input = input - 7;
+    while(input > 4 && input < 255) {
+        input = input - 5;
         count += 1;
     }
     enemy[0] = input;
@@ -105,8 +105,8 @@ char encode_pos_laser(int position[], char direction)
     else
         z = 255;
 
-    if (z != -1)
-        return (x+(7*y)) + (35*(z+1));
+    if (z != 255)
+        return (x+(5*y)) + (35*(z+1));
     return 255;
 }
 
@@ -115,5 +115,5 @@ char encode_position(int position[])
     // Encode the position so we can transmit
     int x = position[0];
     int y = position[1];
-    return (x+(7*y));
+    return (x+(5*y));
 }

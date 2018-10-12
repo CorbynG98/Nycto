@@ -132,7 +132,7 @@ int main (void)
             // if any data received
 
             //store that data
-            char data = rec_get_data();
+            unsigned char data = rec_get_data();
             debugCharacter = 'G';
 
             //identify data (check if data < 35)
