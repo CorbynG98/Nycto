@@ -20,49 +20,6 @@ void game_init(int position[2], char* direction) {
     *direction = 'N';
 }
 
-/*
-//temporary transceive placeholders
-void transmit_pos(int position[2]) {
-    if (position[0] == 8) {
-        position[1] = 9;
-    }
-}
-
-void transmit_laser(int position[2], int direction) {
-    if (position[0] == 8) {
-        position[1] = 9 + direction;
-    }
-}
-
-bool rec_got_data(void) {
-    return true;
-}
-
-char rec_get_data(void) {
-    return 'E';
-}
-
-bool rec_is_enemy(char data) {
-    return data == 'E';
-}
-
-void rec_get_enemy(int enemy[2], char data) {
-    if (data == 'E') {
-        enemy[0] = 3;
-        enemy[1] = 3;
-    }
-}
-
-void rec_get_laser(int laser[3], char data) {
-    if (data == 'L') {
-        laser[0] = 3;//x
-        laser[1] = 3;//y
-        laser[2] = 3;//direction 0,1,2,3 => n,e,s,w
-    }
-}
-// END TEMP
-*/
-
 void display_character (char character)
 {
     char buffer[2];
