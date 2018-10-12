@@ -68,22 +68,22 @@ void rec_get_laser(int laser[], unsigned char input)
         rec_get_enemy(enemy, input - (35*1));
         laser[0] = enemy[0];
         laser[1] = enemy[1];
-        laser[2] = 0;
+        laser[2] = 'N';
     } else if (input < 105) {
         rec_get_enemy(enemy, input - (35*2));
         laser[0] = enemy[0];
         laser[1] = enemy[1];
-        laser[2] = 1;
+        laser[2] = 'E';
     }  else if (input < 140) {
         rec_get_enemy(enemy, input - (35*3));
         laser[0] = enemy[0];
         laser[1] = enemy[1];
-        laser[2] = 2;
+        laser[2] = 'S';
     }  else if (input < 175) {
         rec_get_enemy(enemy, input - (35*4));
         laser[0] = enemy[0];
         laser[1] = enemy[1];
-        laser[2] = 3;
+        laser[2] = 'W';
     }
 
 }

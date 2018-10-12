@@ -142,13 +142,14 @@ int main (void)
                 disp_add_enemy(enemy);
             } else {
                 int laser[3];
+                // debugCharacter = 'Z';
                 rec_get_laser(laser, data);//convert laser data to three integers
                 disp_add_laser(laser);
             }
         }
         //do this at required frequency
         if (debugCharacter == 'Z') {
-            display_character (debugCharacter);
+            display_character(debugCharacter);
         }
     }
 }
