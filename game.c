@@ -73,21 +73,23 @@ int main (void)
         navswitch_update();
         disp_update();
 
-        //take input and transmit
-        got_minput = nav_getminput(&direction);//got movement input, if so changed direction
+        if (!gameWon && !gameLost) {
+            //take input and transmit
+            got_minput = nav_getminput(&direction);//got movement input, if so changed direction
 
-        if (got_minput) {
-            if (nav_hitwall(position, direction)) {//if player will hit a wall
-                transmit_pos(position);
-                disp_add_self(position);
-            } else {
-                nav_move(position, &direction);
+            if (got_minput) {
+                if (nav_hitwall(position, direction)) {//if player will hit a wall
+                    transmit_pos(position);
+                    disp_add_self(position);
+                } else {
+                    nav_move(position, &direction);
+                }
             }
-        }
-        if (nav_shoot()) {
-            int laser[3] = {position[0], position[1], direction};
-            disp_add_self_laser(laser);
-            transmit_laser(position, direction);
+            if (nav_shoot()) {
+                int laser[3] = {position[0], position[1], direction};
+                disp_add_self_laser(laser);
+                transmit_laser(position, direction);
+            }
         }
 
         //receive data and display
@@ -109,12 +111,12 @@ int main (void)
                 int laser[3];
                 rec_get_laser(laser, data);//convert laser data to three integers
                 disp_add_enemy_laser(laser);
-                //if (laser_hit_self(laser, position)) {
-                //    //if hit by enemy laser, we lose
-                //    transmit_loss();
-                //    gameLost = true;
-                //    disp_game_lose();
-                //}
+                if (laser_hit_self(laser, position)) {
+                    //if hit by enemy laser, we lose
+                    transmit_loss();
+                    gameLost = true;
+                    disp_game_lose();
+                }
             }
         }
         //do this at required frequency
