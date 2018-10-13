@@ -35,6 +35,14 @@ bool nav_move(int position[], char* prev_dir) {
     return true;
 }
 
+char nav_getmhorizontal(void) {
+    if (navswitch_push_event_p (NAVSWITCH_EAST))
+        return 'E';
+    else if (navswitch_push_event_p (NAVSWITCH_WEST))
+        return 'W';
+    return NULL;
+}
+
 /* char nav_delta(position, last_pos) {
     // Calculate the direction the player has moved in.
     if (last_pos[0] - position[0] > 0) {

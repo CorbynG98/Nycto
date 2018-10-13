@@ -31,6 +31,9 @@ nav.o: nav.c nav.h
 transceive.o: transceive.c transceive.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+menu.o: menu.c menu.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
 # Make all the built it libraries / devices / stuff
 pio.o: ../../drivers/avr/pio.c ../../drivers/avr/pio.h ../../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
@@ -70,7 +73,7 @@ prescale.o: ../../drivers/avr/prescale.c ../../drivers/avr/prescale.h ../../driv
 
 
 # Link: create ELF output file from object files.
-game.out: game.o system.o disp.o nav.o transceive.o pio.o timer.o display.o ledmat.o font.o tinygl.o navswitch.o ir_uart.o usart1.o timer0.o prescale.o pacer.o
+game.out: game.o system.o disp.o nav.o menu.o transceive.o pio.o timer.o display.o ledmat.o font.o tinygl.o navswitch.o ir_uart.o usart1.o timer0.o prescale.o pacer.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

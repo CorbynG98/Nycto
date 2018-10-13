@@ -4,6 +4,12 @@
 /** Transmit the position **/
 void transmit_pos(int position[]);
 
+/** Transmits that player 1 has been selected **/
+void transmit_player1(void)
+
+/** Transmits the map the player 1 selected. **/
+void transmit_map(char currentMap);
+
 /** get the data received from the ir device **/
 char rec_get_data(void);
 

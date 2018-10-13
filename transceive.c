@@ -19,6 +19,15 @@ void transmit_pos(int position[])
     ir_uart_putc(transmit_char);
 }
 
+void transmit_player1(void) {
+    char player1choice = 171;
+    ir_uart_putc(player1choice);
+}
+
+void transmit_map(char currentMap) {
+    ir_uart_putc(currentMap);
+}
+
 char rec_get_data(void)
 {
     // Receive position
