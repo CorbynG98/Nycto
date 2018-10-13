@@ -9,6 +9,7 @@
 #define DISP_TIME 60 //time to display a player for
 #define DISP_LASER_TIME 40 // time to display a laser for
 #define DISP_WIN_FLASH_TIME 80 // time to flash blue for
+#define DISP_NPC_WAIT_MULT 10 // multiple of DISP_LASER_TIME to wait for between shots
 #define MESSAGE_RATE 10
 
 //AVR constants
@@ -18,6 +19,7 @@
 //static objects
 static Laser selfLaser = {0, 0, 0, 'N'};
 static Laser enemyLaser = {0, 0, 0, 'N'};
+static Laser npcLaser = {DISP_LASER_TIME+1, 0, 0, 'N'};
 static Player self = {0, 0, 0};
 static Player enemy = {0, 0, 0};
 
@@ -44,30 +46,39 @@ void disp_init(void)
     pio_config_set (LED_PIO, PIO_OUTPUT_LOW);
 }
 
+/** sets given player to a position and displays them temporarily */
+void disp_add_player(Player* player, int position[2])
+{
+    player->counter = DISP_TIME;
+    player->x = position[0];
+    player->y = position[1];
+}
+
 /** display self for a time */
 void disp_add_self(int position[2])
 {
-    self.counter = DISP_TIME;
-    self.x = position[0];
-    self.y = position[1];
+    disp_add_player(&self, position);
 }
 
 /** display the enemy for a time */
 void disp_add_enemy(int position[2])
 {
-    enemy.counter = DISP_TIME;
-    enemy.x = position[0];
-    enemy.y = position[1];
+    disp_add_player(&enemy, position);
+}
+
+/** sets given laserPtr to laser*/
+void disp_add_laser(Laser* laserPtr, int laser[3])
+{
+    laserPtr->counter = DISP_LASER_TIME;
+    laserPtr->x = laser[0];
+    laserPtr->y = laser[1];
+    laserPtr->direction = laser[2];
 }
 
 /** creates self laser */
 void disp_add_self_laser(int laser[3])
 {
-    //generalize these
-    selfLaser.counter = DISP_LASER_TIME;
-    selfLaser.x = laser[0];
-    selfLaser.y = laser[1];
-    selfLaser.direction = laser[2];
+    disp_add_laser(&selfLaser, laser);
     //also add self player
     int pos[2] = {laser[0], laser[1]};
     disp_add_self(pos);
@@ -76,47 +87,59 @@ void disp_add_self_laser(int laser[3])
 /** creates enemy laser */
 void disp_add_enemy_laser(int laser[3])
 {
-    enemyLaser.counter = DISP_LASER_TIME;
-    enemyLaser.x = laser[0];
-    enemyLaser.y = laser[1];
-    enemyLaser.direction = laser[2];
+    disp_add_laser(&enemyLaser, laser);
     //also add enemy player
     int pos[2] = {laser[0], laser[1]};
     disp_add_enemy(pos);
 }
 
+/** creates npc laser */
+void disp_add_npc_laser(int laser[3])
+{
+    disp_add_laser(&npcLaser, laser);
+}
+
+/** refresh timer on npc laser */
+void disp_refresh_npc_laser(void)
+{
+    npcLaser.counter = DISP_LASER_TIME;
+}
+
 /** Displays a laser for a frame*/
-void disp_laser(Laser laser, const uint8_t level[])
+void disp_laser(Laser laser, const uint8_t level[], bool isNPC)
 {
     int endx = laser.x;
     int endy = laser.y;
     int startx = laser.x;
     int starty = laser.y;
-    set_laser_coords(&startx, &starty, &endx, &endy, laser.direction, level);
+    set_laser_coords(&startx, &starty, &endx, &endy, laser.direction, level, isNPC);
     tinygl_draw_line (tinygl_point (startx, starty),
                       tinygl_point (endx, endy),
                       OUTPUT_HIGH);
 }
 
 /** given a starting position, find laser coordinates */
-void set_laser_coords(int* startx, int* starty, int* endx, int* endy, char direction, const uint8_t level[])
+void set_laser_coords(int* startx, int* starty, int* endx, int* endy, char direction, const uint8_t level[], bool isNPC)
 {
-    //set default position if hit no walls
+    //set default position if hit no walls, moving one position past the player
+    int increment = 1;
+    if (isNPC)
+        increment = 0;
     switch (direction) {
         case 'N':
-            (*starty)--;
+            (*starty)-=increment;
             *endy = 0;
             break;
         case 'E':
-            (*startx)++;
+            (*startx)+=increment;
             *endx = TINYGL_WIDTH;
             break;
         case 'S':
-            (*starty)++;
+            (*starty)+=increment;
             *endy = TINYGL_HEIGHT;
             break;
         case 'W':
-            (*startx)--;
+            (*startx)-=increment;
             *endx = 0;
             break;
     }
@@ -168,15 +191,16 @@ void swap_int(int* x, int* y)
     *y = temp;
 }
 
-/** check if we hit a thing */
-bool laser_hit_self(int laser[3], int position[2], const uint8_t level[])
+/** check if we the laser intersects with position, taking into account
+ * the level */
+bool laser_hit_self(int laser[3], int position[2], const uint8_t level[], bool isNPC)
 {
     int endx = laser[0];
     int endy = laser[1];
     int startx = laser[0];
     int starty = laser[1];
 
-    set_laser_coords(&startx ,&starty, &endx, &endy, laser[2], level);
+    set_laser_coords(&startx ,&starty, &endx, &endy, laser[2], level, isNPC);
 
     //make sure start is before end
     if (startx > endx) {
@@ -197,9 +221,9 @@ bool laser_hit_self(int laser[3], int position[2], const uint8_t level[])
     return false;
 }
 
-/** Returns whether an LED should be turned on to establish a fading
- * effect as counter ramps down from max. Causes lag and is basically
- * useless */
+/** OBSOLETE: Returns whether an LED should be turned on to establish a
+ * fading effect as counter ramps down from max. Causes lag and is
+ * basically useless */
  /*
 bool fader(int counter, int max) {
     if (counter < max/2) {
@@ -235,6 +259,8 @@ void disp_clear_character(void)
     disp_character(' ');
 }
 
+/** displays a bitmap, one pixel at a time, because tinygl doesn't
+ *  allow us to add columns to their private matrix :( */
 void disp_bitmap(const uint8_t level[])
 {
     for (int i=0;i<TINYGL_WIDTH;i++) {
@@ -243,6 +269,23 @@ void disp_bitmap(const uint8_t level[])
                 tinygl_pixel_set(tinygl_point (i, j), OUTPUT_HIGH);
             }
         }
+    }
+}
+
+/** returns true if the npc laser has been initialised*/
+bool have_npc_laser(void)
+{
+    return npcLaser.counter < DISP_LASER_TIME+1;
+}
+
+/** return true if position intersects with the npc laser */
+bool hit_npc_laser(int position[2], const uint8_t level[])
+{
+    if (npcLaser.counter > 0) {
+        int laser[3] = {npcLaser.x, npcLaser.y, npcLaser.direction};
+        return laser_hit_self(laser, position, level, true);
+    } else {
+        return false;
     }
 }
 
@@ -281,12 +324,19 @@ void disp_update(const uint8_t level[])
 
         //draw lasers
         if (selfLaser.counter > 0) {
-            disp_laser(selfLaser, level);
+            disp_laser(selfLaser, level, false);
             selfLaser.counter--;
         }
         if (enemyLaser.counter > 0) {
-            disp_laser(enemyLaser, level);
+            disp_laser(enemyLaser, level, false);
             enemyLaser.counter--;
+        }
+        if (have_npc_laser()) {
+            //if npcLaser has been added
+            if (npcLaser.counter > 0) {
+                disp_laser(npcLaser, level, true);
+                npcLaser.counter--;
+            }
         }
 
         //draw level

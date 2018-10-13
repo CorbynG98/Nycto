@@ -21,6 +21,7 @@ int main (void)
     char direction;
     char level;
     bool isPlayer1;
+    int counter = 0;
 
     //basically an array of chars (8-bit ints)
     uint8_t bitmap[5] = {0x00, 0x00, 0x00, 0x00, 0x00};
@@ -68,6 +69,20 @@ int main (void)
                 disp_add_self_laser(laser);
                 transmit_laser(position, direction);
             }
+            if (have_npc_laser()) {
+                //if npc laser exists, turn it on occasionally
+                counter++;
+                if (counter >= 200) {
+                    disp_refresh_npc_laser();
+                    counter = 0;
+                }
+                if (hit_npc_laser(position, bitmap)) {
+                    //if hit by npc laser, lose
+                    transmit_loss();
+                    gameLost = true;
+                    disp_game_lose();
+                }
+            }
         }
 
         //receive data and display
@@ -89,7 +104,7 @@ int main (void)
                 int laser[3];
                 rec_get_laser(laser, data);//convert laser data to three integers
                 disp_add_enemy_laser(laser);
-                if (laser_hit_self(laser, position, bitmap)) {
+                if (laser_hit_self(laser, position, bitmap, false)) {
                     //if hit by enemy laser, we lose
                     transmit_loss();
                     gameLost = true;

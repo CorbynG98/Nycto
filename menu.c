@@ -111,6 +111,8 @@ void build_level(char map, uint8_t bitmap[]) {
         bitmap[2] = 0x00;
         bitmap[3] = 0x76;
         bitmap[4] = 0x00;
+        int laser[3] = {0, 3, 'E'};
+        disp_add_npc_laser(laser);
     } else if (map == 'C') {
         // Build map C
         bitmap[0] = 0x00;
