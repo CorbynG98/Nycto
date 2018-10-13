@@ -86,21 +86,22 @@ void disp_add_enemy_laser(int laser[3])
 }
 
 /** Displays a laser for a frame*/
-void disp_laser(Laser laser)
+void disp_laser(Laser laser, const uint8_t level[])
 {
     int endx = laser.x;
     int endy = laser.y;
     int startx = laser.x;
     int starty = laser.y;
-    set_laser_coords(&startx, &starty, &endx, &endy, laser.direction);
+    set_laser_coords(&startx, &starty, &endx, &endy, laser.direction, level);
     tinygl_draw_line (tinygl_point (startx, starty),
                       tinygl_point (endx, endy),
                       OUTPUT_HIGH);
 }
 
 /** given a starting position, find laser coordinates */
-void set_laser_coords(int* startx, int* starty, int* endx, int* endy, char direction)
+void set_laser_coords(int* startx, int* starty, int* endx, int* endy, char direction, const uint8_t level[])
 {
+    //set default position if hit no walls
     switch (direction) {
         case 'N':
             (*starty)--;
@@ -119,6 +120,44 @@ void set_laser_coords(int* startx, int* starty, int* endx, int* endy, char direc
             *endx = 0;
             break;
     }
+
+    //check if laser hits a wall
+    bool hitWall = false;
+    if (*startx < *endx || *starty < *endy) {
+        //if pointing down or right
+        int i=*startx;
+        while (i <= *endx && !hitWall) {
+            int j=*starty;
+            while (j <= *endy && !hitWall) {
+                if (level[i] & (1 << j)) {
+                    //if level has a wall at i,j
+                    *endx = i;
+                    *endy = j;
+                    hitWall = true;
+                }
+                j++;
+            }
+            i++;
+        }
+    } else {
+        int i=*startx;
+        while (i >= *endx && !hitWall) {
+            int j=*starty;
+            while (j >= *endy && !hitWall) {
+                if (level[i] & (1 << j)) {
+                    //if level has a wall at i,j
+                    *endx = i;
+                    *endy = j;
+                    hitWall = true;
+                }
+                j--;
+            }
+            i--;
+        }
+    }
+
+
+
 }
 
 /** swaps two integers */
@@ -130,21 +169,23 @@ void swap_int(int* x, int* y)
 }
 
 /** check if we hit a thing */
-bool laser_hit_self(int laser[3], int position[2])
+bool laser_hit_self(int laser[3], int position[2], const uint8_t level[])
 {
     int endx = laser[0];
     int endy = laser[1];
     int startx = laser[0];
     int starty = laser[1];
 
-    set_laser_coords(&startx ,&starty, &endx, &endy, laser[2]);
+    set_laser_coords(&startx ,&starty, &endx, &endy, laser[2], level);
 
+    //make sure start is before end
     if (startx > endx) {
         swap_int(&startx, &endx);
     }
     if (starty > endy) {
         swap_int(&starty, &endy);
     }
+
     //if hit by enemy laser
     for (int i=startx;i <= endx; i++) {
         for (int j=starty;j <= endy; j++) {
@@ -240,11 +281,11 @@ void disp_update(const uint8_t level[])
 
         //draw lasers
         if (selfLaser.counter > 0) {
-            disp_laser(selfLaser);
+            disp_laser(selfLaser, level);
             selfLaser.counter--;
         }
         if (enemyLaser.counter > 0) {
-            disp_laser(enemyLaser);
+            disp_laser(enemyLaser, level);
             enemyLaser.counter--;
         }
 

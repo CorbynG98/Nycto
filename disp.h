@@ -38,16 +38,16 @@ void disp_add_self_laser(int laser[3]);
 void disp_add_enemy_laser(int laser[3]);
 
 /** Displays a laser for a frame*/
-void disp_laser(Laser laser);
+void disp_laser(Laser laser, const uint8_t level[]);
 
 /** given a starting position, find laser coordinates */
-void set_laser_coords(int* startx, int* starty, int* endx, int* endy, char direction);
+void set_laser_coords(int* startx, int* starty, int* endx, int* endy, char direction, const uint8_t level[]);
 
 /** swaps two integers */
 void swap_int(int* x, int* y);
 
 /** check if we hit a thing */
-bool laser_hit_self(int laser[3], int position[2]);
+bool laser_hit_self(int laser[3], int position[2], const uint8_t level[]);
 
 /** will display text and flash light */
 void disp_game_win(void);

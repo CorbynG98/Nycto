@@ -26,7 +26,7 @@ void game_init(int position[2], char* direction, char level, bool isPlayer1, uin
             position[1] = 6;
             *direction = 'N';
         }
-        bitmap[2] = 0x77;
+        bitmap[2] = 0x2A;
     } else {
         if (!isPlayer1) {
             position[0] = 0;
@@ -117,7 +117,7 @@ int main (void)
                 int laser[3];
                 rec_get_laser(laser, data);//convert laser data to three integers
                 disp_add_enemy_laser(laser);
-                if (laser_hit_self(laser, position)) {
+                if (laser_hit_self(laser, position, bitmap)) {
                     //if hit by enemy laser, we lose
                     transmit_loss();
                     gameLost = true;
