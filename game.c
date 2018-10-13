@@ -13,33 +13,6 @@
 #include "menu.h"
 
 #define PACER_RATE 250
-#define NUM_LEVELS 3
-
-void game_init(int position[2], char* direction, char level, bool isPlayer1, uint8_t bitmap[]) {
-    if (level == 'A') {
-        if (isPlayer1) {
-            position[0] = 0;
-            position[1] = 0;
-            *direction = 'S';
-        } else {
-            position[0] = 4;
-            position[1] = 6;
-            *direction = 'N';
-        }
-        bitmap[2] = 0x2A;
-    } else {
-        if (!isPlayer1) {
-            position[0] = 0;
-            position[1] = 0;
-            *direction = 'S';
-        } else {
-            position[0] = 4;
-            position[1] = 6;
-            *direction = 'N';
-        }
-        bitmap[2] = 0x05;
-    }
-}
 
 int main (void)
 {
@@ -69,8 +42,7 @@ int main (void)
     pacer_init (PACER_RATE);
 
     //
-    main_menu(NUM_LEVELS, &level, &isPlayer1);
-    game_init(position, &direction, level, isPlayer1, bitmap);
+    main_menu(&level, &isPlayer1, position, &direction, bitmap);
 
     while (1)
     {

@@ -9,13 +9,16 @@
 #include "transceive.h"
 #include "disp.h"
 #include "nav.h"
+#include "disp.h"
 
 #define MESSAGE_RATE 10
+#define NUM_LEVELS 3
 
-void build_level(char);
+void build_level(char, uint8_t[]);
+void set_player_pos(int[], char*, bool, char);
 
 /** Loop untill a level has been selected by the player **/
-void main_menu(int num_levels, char* level, bool* isPlayer1)
+void main_menu(char* level, bool* isPlayer1, int position[], char* direction, uint8_t bitmap[])
 {
     // Variables
     int levelChosen = 0;
@@ -33,7 +36,14 @@ void main_menu(int num_levels, char* level, bool* isPlayer1)
         tinygl_update ();
 
         // Display the current map (character)
-        disp_character(currentMap);
+        if (currentMap == 'S') {
+            disp_character(currentMap);
+        } else {
+            disp_clear_character();
+            // Build the currently selected level for the player to see.
+            display_clear();
+            build_level(currentMap, bitmap);
+        }
 
         if (rec_got_data()) {
             // Data can  be received, get the data and deal with it
@@ -44,8 +54,9 @@ void main_menu(int num_levels, char* level, bool* isPlayer1)
                 player1Chosen = 1;
                 currentMap = 'W';
             }
-            if (received >= 'A' && received <= ('A' + num_levels)) {
+            if (received >= 'A' && received <= ('A' + NUM_LEVELS)) {
                 levelChosen = 1;
+                set_player_pos(position, direction, *isPlayer1, *level);
                 *level = received;
             }
         }
@@ -57,7 +68,7 @@ void main_menu(int num_levels, char* level, bool* isPlayer1)
             *level = currentMap;
             levelChosen = 1;
             *isPlayer1 = true;
-            build_level(currentMap);
+            set_player_pos(position, direction, *isPlayer1, *level);
         }
         if (nav_shoot() && !player1Chosen) {
             // Someone has pressed the button, make them player 1.
@@ -68,7 +79,7 @@ void main_menu(int num_levels, char* level, bool* isPlayer1)
         }
         if (nav_getmhorizontal() == 'E' && youPlayer1) {
             // Player moved nav switch east.
-            if (currentMap == 'A' + num_levels - 1)
+            if (currentMap == 'A' + NUM_LEVELS - 1)
                 currentMap = 'A';
             else
                 currentMap += 1;
@@ -76,15 +87,71 @@ void main_menu(int num_levels, char* level, bool* isPlayer1)
         if (nav_getmhorizontal() == 'W' && youPlayer1) {
             // Player moved nav switch west.
             if (currentMap == 'A')
-                currentMap = 'A' + num_levels - 1;
+                currentMap = 'A' + NUM_LEVELS - 1;
             else
                 currentMap -= 1;
         }
-
     }
     disp_clear_character();
 }
 
-void build_level(char map) {
+void build_level(char map, uint8_t bitmap[]) {
     // Where the map gets made
+    if (map == 'A') {
+        // Build map A
+        bitmap[0] = 0x00;
+        bitmap[1] = 0x00;
+        bitmap[2] = 0x77;
+        bitmap[3] = 0x00;
+        bitmap[4] = 0x00;
+    } else if (map == 'B') {
+        // Build map B
+        bitmap[0] = 0x00;
+        bitmap[1] = 0x37;
+        bitmap[2] = 0x00;
+        bitmap[3] = 0x76;
+        bitmap[4] = 0x00;
+    } else if (map == 'C') {
+        // Build map C
+        bitmap[0] = 0x00;
+        bitmap[1] = 0x22;
+        bitmap[2] = 0x2A;
+        bitmap[3] = 0x22;
+        bitmap[4] = 0x00;
+    }
+    disp_bitmap(bitmap);
+}
+
+void set_player_pos(int position[], char* direction, bool isPlayer1, char level) {
+    if (level == 'A') {
+        if (isPlayer1) {
+            position[0] = 0;
+            position[1] = 0;
+            *direction = 'S';
+        } else {
+            position[0] = 4;
+            position[1] = 6;
+            *direction = 'N';
+        }
+    } else if (level == 'B') {
+        if (!isPlayer1) {
+            position[0] = 0;
+            position[1] = 0;
+            *direction = 'S';
+        } else {
+            position[0] = 4;
+            position[1] = 6;
+            *direction = 'N';
+        }
+    } else if (level == 'C') {
+        if (!isPlayer1) {
+            position[0] = 1;
+            position[1] = 0;
+            *direction = 'E';
+        } else {
+            position[0] = 3;
+            position[1] = 6;
+            *direction = 'W';
+        }
+    }
 }
