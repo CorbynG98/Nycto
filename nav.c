@@ -65,8 +65,42 @@ bool nav_shoot(void) {
     return false;
 }
 
+/** Convert the uint8_t bitmap value to a binary string **/
+void ul32toBinary(uint8_t a, char binary[])
+{
+    uint8_t i;
+
+    for(i=0x80;i!=0;i>>=1)
+        (a&i)?strcat(binary, "0"):strcat(binary, "1");
+}
+
+/** Check if the player hits one of the inside walls **/
+bool nav_hitwallinner(int position[], char move_dir, const uint8_t bitmap[])
+{
+    // Check if hit inner walls
+    int toMove[2] = position;
+    if (move_dir == 'N') {
+        toMove[0] += 1;
+    } else if (move_dir == 'S') {
+        toMove[0] -= 1;
+    } else if (move_dir == 'E') {
+        toMove[1] += 1;
+    } else if (move_dir == 'W') {
+        toMove[1] -= 1;
+    }
+
+    char binary[8] = "";
+    ul32toBinary(bitmap[toMove[0]], binary);
+    if(binary[toMove[1]] == '1') {
+        return true;
+    }
+    return false;
+}
+
 /** Check if the player is trying to move into a wall. */
-bool nav_hitwall(int position[], char move_dir) {
+bool nav_hitwall(int position[], char move_dir, const uint8_t bitmap[])
+{
+    // Check if hit outer wall
     if (move_dir == 'N') {
         if (position[1] <= 0)
             return true;
@@ -80,5 +114,7 @@ bool nav_hitwall(int position[], char move_dir) {
         if (position[0] <= 0)
             return true;
     }
-    return false;
+
+    // Check inner walls hit
+    return(nav_hitwallinner(position[] move_dir, bitmap[]));
 }
