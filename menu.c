@@ -54,7 +54,7 @@ void main_menu(char* level, bool* isPlayer1, int position[], char* direction, ui
                 player1Chosen = 1;
                 currentMap = 'W';
             }
-            if (received >= 'A' && received <= ('A' + NUM_LEVELS)) {
+            if (received >= 'A' && received <= ('A' + NUM_LEVELS - 1)) {
                 levelChosen = 1;
                 set_player_pos(position, direction, *isPlayer1, *level);
                 *level = received;
