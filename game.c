@@ -109,7 +109,7 @@ int main (void)
                 int laser[3];
                 rec_get_laser(laser, data);//convert laser data to three integers
                 disp_add_enemy_laser(laser);
-                //if (laser_hit_self(laser)) {
+                //if (laser_hit_self(laser, position)) {
                 //    //if hit by enemy laser, we lose
                 //    transmit_loss();
                 //    gameLost = true;

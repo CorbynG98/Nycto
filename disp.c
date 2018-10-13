@@ -92,27 +92,68 @@ void disp_laser(Laser laser)
     int endy = laser.y;
     int startx = laser.x;
     int starty = laser.y;
-    switch (laser.direction) {
-        case 'N':
-            starty--;
-            endy = 0;
-            break;
-        case 'E':
-            startx++;
-            endx = TINYGL_WIDTH;
-            break;
-        case 'S':
-            starty++;
-            endy = TINYGL_HEIGHT;
-            break;
-        case 'W':
-            startx--;
-            endx = 0;
-            break;
-    }
+    set_laser_coords(&startx, &starty, &endx, &endy, laser.direction);
     tinygl_draw_line (tinygl_point (startx, starty),
                       tinygl_point (endx, endy),
                       OUTPUT_HIGH);
+}
+
+/** given a starting position, find laser coordinates */
+void set_laser_coords(int* startx, int* starty, int* endx, int* endy, char direction)
+{
+    switch (direction) {
+        case 'N':
+            *starty--;
+            *endy = 0;
+            break;
+        case 'E':
+            *startx++;
+            *endx = TINYGL_WIDTH;
+            break;
+        case 'S':
+            *starty++;
+            *endy = TINYGL_HEIGHT;
+            break;
+        case 'W':
+            *startx--;
+            *endx = 0;
+            break;
+    }
+}
+
+/** swaps two integers */
+void swap_int(int* x, int* y)
+{
+    int temp = *x;
+    *x = *y;
+    *y = temp;
+}
+
+/** check if we hit a thing */
+bool laser_hit_self(int laser[3], int position[2])
+{
+    int endx = laser[0];
+    int endy = laser[1];
+    int startx = laser[0];
+    int starty = laser[1];
+
+    set_laser_coords(&startx ,&starty, &endx, &endy, laser[2]);
+
+    if (startx > endx) {
+        swap_int(&startx, &endx);
+    }
+    if (starty > endy) {
+        swap_int(&starty, &endy);
+    }
+    //if hit by enemy laser
+    for (int i=startx;i <= endx; i++) {
+        for (int j=starty;j <= endy; j++) {
+            if (position[0] == i && position[1] == j) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 /** Returns whether an LED should be turned on to establish a fading

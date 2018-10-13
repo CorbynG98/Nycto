@@ -1,6 +1,8 @@
 #ifndef DISP_H
 #define DISP_H
 
+#include <stdbool.h>
+
 /** debug function*/
 char getDebugChar(void);
 
@@ -36,6 +38,15 @@ void disp_add_enemy_laser(int laser[3]);
 
 /** Displays a laser for a frame*/
 void disp_laser(Laser laser);
+
+/** given a starting position, find laser coordinates */
+void set_laser_coords(int* startx, int* starty, int* endx, int* endy, char direction);
+
+/** swaps two integers */
+void swap_int(int* x, int* y);
+
+/** check if we hit a thing */
+bool laser_hit_self(int laser[3], int position[2]);
 
 /** will display text and flash light */
 void disp_game_win(void);
