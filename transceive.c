@@ -28,7 +28,7 @@ void transmit_map(char currentMap) {
     ir_uart_putc(currentMap);
 }
 
-char rec_get_data(void)
+unsigned char rec_get_data(void)
 {
     // Receive position
     unsigned char received = ir_uart_getc();
@@ -97,7 +97,7 @@ void rec_get_laser(int laser[], unsigned char input)
 
 }
 
-char encode_pos_laser(int position[], char direction)
+unsigned char encode_pos_laser(int position[], char direction)
 {
     // Encode the position so we can transmit
     int x = position[0];
@@ -119,7 +119,7 @@ char encode_pos_laser(int position[], char direction)
     return 255;
 }
 
-char encode_position(int position[])
+unsigned char encode_position(int position[])
 {
     // Encode the position so we can transmit
     int x = position[0];

@@ -9,24 +9,11 @@
 #include "transceive.h"
 #include "disp.h"
 #include "nav.h"
+#include "menu.h"
 
 #define PACER_RATE 250
-#define MESSAGE_RATE 10
 
-void game_init(int position[2], char* direction) {
-    //setup position
-    position[0] = 1;
-    position[1] = 1;
-    *direction = 'N';
-}
-
-void display_character (char character)
-{
-    char buffer[2];
-    buffer[0] = character;
-    buffer[1] = '\0';
-    tinygl_text (buffer);
-}
+#define NUM_LEVELS 3
 
 int main (void)
 {
@@ -45,15 +32,11 @@ int main (void)
     ir_uart_init();
 
     //wait for first button press
-    game_init(position, &direction);//game is asymmetric so players start in different places
-    pacer_init (PACER_RATE);
     disp_init();
+    pacer_init (PACER_RATE);
 
-    //debug
-    tinygl_font_set (&font5x7_1);
-    tinygl_text_speed_set (MESSAGE_RATE);
-
-
+    //
+    main_menu(NUM_LEVELS);
 
     while (1)
     {
@@ -62,19 +45,14 @@ int main (void)
         navswitch_update();
         disp_update();
 
-        //debugCharacter = getDebugChar();
-
         //take input and transmit
         got_minput = nav_getminput(&direction);//got movement input, if so changed direction
 
         if (got_minput) {
-            debugCharacter = 'M';
             if (nav_hitwall(position, direction)) {//if player will hit a wall
-                debugCharacter = 'H';
                 transmit_pos(position);
                 disp_add_self(position);
             } else {
-                debugCharacter = 'N';
                 nav_move(position, &direction);
             }
         }
@@ -90,7 +68,6 @@ int main (void)
 
             //store that data
             unsigned char data = rec_get_data();
-            debugCharacter = 'G';
 
             //identify data (check if data < 35)
             if (rec_is_enemy(data)) {
@@ -99,14 +76,13 @@ int main (void)
                 disp_add_enemy(enemy);
             } else {
                 int laser[3];
-                // debugCharacter = 'Z';
                 rec_get_laser(laser, data);//convert laser data to three integers
                 disp_add_enemy_laser(laser);
             }
         }
         //do this at required frequency
         if (debugCharacter == 'Z') {
-            display_character(debugCharacter);
+            disp_character(debugCharacter);
         }
     }
 }

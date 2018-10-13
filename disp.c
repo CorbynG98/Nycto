@@ -1,15 +1,32 @@
-#include "tinygl.h"
 #include "disp.h"
+#include "tinygl.h"
+#include "../fonts/font5x7_1.h"
+#include "pio.h"
+#include <stdbool.h>
 
-#define DISP_RATE 500 //should be the same as PACER_RATE
+//customization constants
+#define DISP_RATE 250 //should be the same as PACER_RATE
 #define DISP_TIME 60 //time to display a player for
 #define DISP_LASER_TIME 40 // time to display a laser for
-#define OUTPUT_HIGH 1
+#define DISP_WIN_FLASH_TIME 80 // time to flash blue for
+#define MESSAGE_RATE 10
 
-Laser selfLaser = {0, 0, 0, 'N'};
-Laser enemyLaser = {0, 0, 0, 'N'};
-Player self = {0, 0, 0};
-Player enemy = {0, 0, 0};
+//AVR constants
+#define OUTPUT_HIGH 1
+#define LED_PIO PIO_DEFINE (PORT_C, 2)
+
+//static objects
+static Laser selfLaser = {0, 0, 0, 'N'};
+static Laser enemyLaser = {0, 0, 0, 'N'};
+static Player self = {0, 0, 0};
+static Player enemy = {0, 0, 0};
+
+//static game variables
+static bool gameWon = false;
+static bool gameLost = false;
+static int winFlashCounter = DISP_WIN_FLASH_TIME;//length of blue light flash at end
+static char* GAMEWON = "WIN";
+static char* GAMELOST = "LOSE";
 
 static char dispDebugChar = 'D';
 
@@ -21,8 +38,10 @@ char getDebugChar(void) {
 void disp_init(void)
 {
     tinygl_init (DISP_RATE);
-    //self.counter = DISPLAY_TIME;
-    //enemy.counter = DISPLAY_TIME;
+    tinygl_font_set (&font5x7_1);
+    tinygl_text_speed_set (MESSAGE_RATE);
+    //tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
+    pio_config_set (LED_PIO, PIO_OUTPUT_LOW);
 }
 
 /** display self for a time */
@@ -50,8 +69,8 @@ void disp_add_self_laser(int laser[3])
     selfLaser.y = laser[1];
     selfLaser.direction = laser[2];
     //also add self player
-    int self[2] = {laser[0], laser[1]};
-    disp_add_self(self);
+    int pos[2] = {laser[0], laser[1]};
+    disp_add_self(pos);
 }
 
 /** creates enemy laser */
@@ -62,8 +81,8 @@ void disp_add_enemy_laser(int laser[3])
     enemyLaser.y = laser[1];
     enemyLaser.direction = laser[2];
     //also add enemy player
-    int enemy[2] = {laser[0], laser[1]};
-    disp_add_enemy(enemy);
+    int pos[2] = {laser[0], laser[1]};
+    disp_add_enemy(pos);
 }
 
 /** Displays a laser for a frame*/
@@ -109,31 +128,68 @@ bool fader(int counter, int max) {
 }
 * */
 
+/** will display text and flash light */
+void disp_game_win(void) {
+    gameWon = true;
+}
+
+/** will display text */
+void disp_game_lost(void) {
+    gameLost = true;
+}
+
+/** displays a character using tinygl */
+void disp_character (char character)
+{
+    char buffer[2];
+    buffer[0] = character;
+    buffer[1] = '\0';
+    tinygl_text (buffer);
+}
+
 /** deals with displaying current instances */
 void disp_update(void)
 {
-    display_clear ();
+    if (gameWon) {
+        //blue light flash
+        if (winFlashCounter == -DISP_WIN_FLASH_TIME) {
+            winFlashCounter = DISP_WIN_FLASH_TIME;
+        } else if (winFlashCounter > 0){
+            //light on
+            pio_output_high (LED_PIO);
+            winFlashCounter--;
+        } else {
+            //light off
+            pio_output_low (LED_PIO);
+            winFlashCounter--;
+        }
+        tinygl_text (GAMEWON);
+    } else if (gameLost) {
+        tinygl_text (GAMELOST);
+    } else {
 
-    //draw players
-    if (self.counter > 0) {
-        tinygl_pixel_set(tinygl_point (self.x, self.y), OUTPUT_HIGH);
-        self.counter--;
-    }
-    if (enemy.counter > 0) {
-        tinygl_pixel_set(tinygl_point (enemy.x, enemy.y), OUTPUT_HIGH);
-        enemy.counter--;
-    }
+        display_clear ();
 
-    //draw lasers
-    if (selfLaser.counter > 0) {
-        disp_laser(selfLaser);
-        selfLaser.counter--;
-    }
-    if (enemyLaser.counter > 0) {
-        disp_laser(enemyLaser);
-        enemyLaser.counter--;
-    }
+        //draw players
+        if (self.counter > 0) {
+            tinygl_pixel_set(tinygl_point (self.x, self.y), OUTPUT_HIGH);
+            self.counter--;
+        }
+        if (enemy.counter > 0) {
+            tinygl_pixel_set(tinygl_point (enemy.x, enemy.y), OUTPUT_HIGH);
+            enemy.counter--;
+        }
 
+        //draw lasers
+        if (selfLaser.counter > 0) {
+            disp_laser(selfLaser);
+            selfLaser.counter--;
+        }
+        if (enemyLaser.counter > 0) {
+            disp_laser(enemyLaser);
+            enemyLaser.counter--;
+        }
+    }
     //refresh frame
     tinygl_update ();
 }

@@ -37,6 +37,15 @@ void disp_add_enemy_laser(int laser[3]);
 /** Displays a laser for a frame*/
 void disp_laser(Laser laser);
 
+/** will display text and flash light */
+void disp_game_win(void);
+
+/** will display text */
+void disp_game_lost(void);
+
+/** displays a character using tinygl */
+void disp_character (char character);
+
 /** deals with displaying current instances */
 void disp_update(void);
 

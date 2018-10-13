@@ -40,7 +40,7 @@ char nav_getmhorizontal(void) {
         return 'E';
     else if (navswitch_push_event_p (NAVSWITCH_WEST))
         return 'W';
-    return NULL;
+    return 'Q';
 }
 
 /* char nav_delta(position, last_pos) {

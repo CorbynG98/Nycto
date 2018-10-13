@@ -5,13 +5,13 @@
 void transmit_pos(int position[]);
 
 /** Transmits that player 1 has been selected **/
-void transmit_player1(void)
+void transmit_player1(void);
 
 /** Transmits the map the player 1 selected. **/
 void transmit_map(char currentMap);
 
 /** get the data received from the ir device **/
-char rec_get_data(void);
+unsigned char rec_get_data(void);
 
 /** transmit the data for the laser **/
 void transmit_laser(int position[], char direction);
@@ -29,9 +29,9 @@ void rec_get_enemy(int enemy[], unsigned char input);
 void rec_get_laser(int laser[], unsigned char input);
 
 /** Encode the player and laser direction **/
-char encode_pos_laser(int position[], char direction);
+unsigned char encode_pos_laser(int position[], char direction);
 
 /** Encode the player position **/
-char encode_position(int position[]);
+unsigned char encode_position(int position[]);
 
 #endif

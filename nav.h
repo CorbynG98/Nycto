@@ -8,7 +8,7 @@ bool nav_getminput(char* prev_dir);
 bool nav_move(int position[], char* prev_dir);
 
 /** Get the horizontal input of the nav switch, for the menu **/
-char nav_getmhorizontal(void)
+char nav_getmhorizontal(void);
 
 /** Return true if the player tried to shoot. */
 bool nav_shoot(void);
