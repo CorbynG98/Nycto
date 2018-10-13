@@ -66,14 +66,14 @@ void main_menu(int num_levels, char* level, bool* isPlayer1)
             youPlayer1 = 1;
             currentMap = 'A';
         }
-        if (nav_getmhorizontal() == 'E') {
+        if (nav_getmhorizontal() == 'E' && youPlayer1) {
             // Player moved nav switch east.
             if (currentMap == 'A' + num_levels - 1)
                 currentMap = 'A';
             else
                 currentMap += 1;
         }
-        if (nav_getmhorizontal() == 'W') {
+        if (nav_getmhorizontal() == 'W' && youPlayer1) {
             // Player moved nav switch west.
             if (currentMap == 'A')
                 currentMap = 'A' + num_levels - 1;
