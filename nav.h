@@ -14,10 +14,7 @@ char nav_getmhorizontal(void);
 bool nav_shoot(void);
 
 /** Check if the player is trying to move into a wall. */
-bool nav_hitwall(int position[], char move_dir);
-
-/** Convert the uint8_t bitmap value to a binary string **/
-void ul32toBinary(uint8_t a, char binary[]);
+bool nav_hitwall(int position[], char move_dir, const uint8_t bitmap[]);
 
 /** Checks if the player hits an inner wall. **/
 bool nav_hitwallinner(int position[], char move_dir, const uint8_t bitmap[]);

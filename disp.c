@@ -103,19 +103,19 @@ void set_laser_coords(int* startx, int* starty, int* endx, int* endy, char direc
 {
     switch (direction) {
         case 'N':
-            *starty--;
+            (*starty)--;
             *endy = 0;
             break;
         case 'E':
-            *startx++;
+            (*startx)++;
             *endx = TINYGL_WIDTH;
             break;
         case 'S':
-            *starty++;
+            (*starty)++;
             *endy = TINYGL_HEIGHT;
             break;
         case 'W':
-            *startx--;
+            (*startx)--;
             *endx = 0;
             break;
     }
@@ -194,8 +194,19 @@ void disp_clear_character(void)
     disp_character(' ');
 }
 
+void disp_bitmap(const uint8_t level[])
+{
+    for (int i=0;i<TINYGL_WIDTH;i++) {
+        for (int j=0;j<TINYGL_HEIGHT;j++) {
+            if (level[i] & (1 << j)) {
+                tinygl_pixel_set(tinygl_point (i, j), OUTPUT_HIGH);
+            }
+        }
+    }
+}
+
 /** deals with displaying current instances */
-void disp_update(void)
+void disp_update(const uint8_t level[])
 {
     if (dispGameWon) {
         //blue light flash
@@ -236,6 +247,9 @@ void disp_update(void)
             disp_laser(enemyLaser);
             enemyLaser.counter--;
         }
+
+        //draw level
+        disp_bitmap(level);
     }
     //refresh frame
     tinygl_update ();

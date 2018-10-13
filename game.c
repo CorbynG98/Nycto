@@ -5,6 +5,7 @@
 #include "pacer.h"
 #include "../fonts/font5x7_1.h"
 #include <stdbool.h>
+#include <stdint.h>
 
 #include "transceive.h"
 #include "disp.h"
@@ -14,7 +15,7 @@
 #define PACER_RATE 250
 #define NUM_LEVELS 3
 
-void game_init(int position[2], char* direction, char level, bool isPlayer1) {
+void game_init(int position[2], char* direction, char level, bool isPlayer1, uint8_t bitmap[]) {
     if (level == 'A') {
         if (isPlayer1) {
             position[0] = 0;
@@ -25,6 +26,7 @@ void game_init(int position[2], char* direction, char level, bool isPlayer1) {
             position[1] = 6;
             *direction = 'N';
         }
+        bitmap[2] = 0x77;
     } else {
         if (!isPlayer1) {
             position[0] = 0;
@@ -35,6 +37,7 @@ void game_init(int position[2], char* direction, char level, bool isPlayer1) {
             position[1] = 6;
             *direction = 'N';
         }
+        bitmap[2] = 0x05;
     }
 }
 
@@ -45,6 +48,9 @@ int main (void)
     char direction;
     char level;
     bool isPlayer1;
+
+    //basically an array of chars (8-bit ints)
+    uint8_t bitmap[5] = {0x00, 0x00, 0x00, 0x00, 0x00};
 
     static char debugCharacter = 'A';
 
@@ -64,21 +70,21 @@ int main (void)
 
     //
     main_menu(NUM_LEVELS, &level, &isPlayer1);
-    game_init(position, &direction, level, isPlayer1);
+    game_init(position, &direction, level, isPlayer1, bitmap);
 
     while (1)
     {
         //system upkeep
         pacer_wait();
         navswitch_update();
-        disp_update();
+        disp_update(bitmap);
 
         if (!gameWon && !gameLost) {
             //take input and transmit
             got_minput = nav_getminput(&direction);//got movement input, if so changed direction
 
             if (got_minput) {
-                if (nav_hitwall(position, direction)) {//if player will hit a wall
+                if (nav_hitwall(position, direction, bitmap)) {//if player will hit a wall
                     transmit_pos(position);
                     disp_add_self(position);
                 } else {

@@ -2,6 +2,7 @@
 #define DISP_H
 
 #include <stdbool.h>
+#include <stdint.h>
 
 /** debug function*/
 char getDebugChar(void);
@@ -61,6 +62,6 @@ void disp_character (char character);
 void disp_clear_character(void);
 
 /** deals with displaying current instances */
-void disp_update(void);
+void disp_update(const uint8_t level[]);
 
 #endif

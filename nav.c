@@ -2,6 +2,8 @@
 #include "stdbool.h"
 #include "navswitch.h"
 #include "nav.h"
+#include <stdint.h>
+#include <string.h>
 
 /** Initialise and check what button was pressed. */
 bool nav_getminput(char* prev_dir) {
@@ -65,36 +67,16 @@ bool nav_shoot(void) {
     return false;
 }
 
-/** Convert the uint8_t bitmap value to a binary string **/
-void ul32toBinary(uint8_t a, char binary[])
-{
-    uint8_t i;
-
-    for(i=0x80;i!=0;i>>=1)
-        (a&i)?strcat(binary, "0"):strcat(binary, "1");
-}
-
 /** Check if the player hits one of the inside walls **/
 bool nav_hitwallinner(int position[], char move_dir, const uint8_t bitmap[])
 {
     // Check if hit inner walls
-    int toMove[2] = position;
-    if (move_dir == 'N') {
-        toMove[0] += 1;
-    } else if (move_dir == 'S') {
-        toMove[0] -= 1;
-    } else if (move_dir == 'E') {
-        toMove[1] += 1;
-    } else if (move_dir == 'W') {
-        toMove[1] -= 1;
-    }
+    int toMove[2] = {0,0};
+    toMove[0] = position[0];
+    toMove[1] = position[1];
+    nav_move(toMove, &move_dir);
 
-    char binary[8] = "";
-    ul32toBinary(bitmap[toMove[0]], binary);
-    if(binary[toMove[1]] == '1') {
-        return true;
-    }
-    return false;
+    return bitmap[toMove[0]] & (1 << toMove[1]);
 }
 
 /** Check if the player is trying to move into a wall. */
@@ -116,5 +98,5 @@ bool nav_hitwall(int position[], char move_dir, const uint8_t bitmap[])
     }
 
     // Check inner walls hit
-    return(nav_hitwallinner(position[] move_dir, bitmap[]));
+    return(nav_hitwallinner(position, move_dir, bitmap));
 }
