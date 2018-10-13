@@ -52,6 +52,9 @@ bool laser_hit_self(int laser[3], int position[2]);
 /** will display text and flash light */
 void disp_game_win(void);
 
+/** Display the bitmap **/
+void disp_bitmap(const uint8_t level[]);
+
 /** will display text */
 void disp_game_lose(void);
 
