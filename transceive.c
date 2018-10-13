@@ -34,6 +34,14 @@ void transmit_loss(void) {
     ir_uart_putc(LOSS);
 }
 
+bool rec_player(unsigned char data) {
+    return data == 171;
+}
+
+bool rec_win(unsigned char data) {
+    return data == 172;
+}
+
 unsigned char rec_get_data(void)
 {
     // Receive position

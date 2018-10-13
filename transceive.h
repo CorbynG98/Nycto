@@ -13,6 +13,12 @@ void transmit_map(char currentMap);
 /** Transmits that we have been hit */
 void transmit_loss(void);
 
+/** if received player */
+bool rec_player(unsigned char data);
+
+/** if received win */
+bool rec_win(unsigned char data);
+
 /** get the data received from the ir device **/
 unsigned char rec_get_data(void);
 

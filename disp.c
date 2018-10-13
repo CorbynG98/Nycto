@@ -134,7 +134,7 @@ void disp_game_win(void) {
 }
 
 /** will display text */
-void disp_game_lost(void) {
+void disp_game_lose(void) {
     dispGameLost = true;
 }
 

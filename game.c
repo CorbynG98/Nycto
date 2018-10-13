@@ -73,11 +73,6 @@ int main (void)
         navswitch_update();
         disp_update();
 
-        //if enemy was hit, stop
-        //if (rec_win) {
-        //    gameWon = true;
-        //}
-
         //take input and transmit
         got_minput = nav_getminput(&direction);//got movement input, if so changed direction
 
@@ -107,6 +102,9 @@ int main (void)
                 int enemy[2];
                 rec_get_enemy(enemy, data);//convert player data to two integers
                 disp_add_enemy(enemy);
+            } else if (rec_win(data)) {
+                gameWon = true;
+                disp_game_win();
             } else {
                 int laser[3];
                 rec_get_laser(laser, data);//convert laser data to three integers
@@ -115,6 +113,7 @@ int main (void)
                 //    //if hit by enemy laser, we lose
                 //    transmit_loss();
                 //    gameLost = true;
+                //    disp_game_lose();
                 //}
             }
         }

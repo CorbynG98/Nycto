@@ -41,7 +41,7 @@ void disp_laser(Laser laser);
 void disp_game_win(void);
 
 /** will display text */
-void disp_game_lost(void);
+void disp_game_lose(void);
 
 /** displays a character using tinygl */
 void disp_character (char character);

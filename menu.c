@@ -21,7 +21,7 @@ void main_menu(int num_levels, char* level, bool* isPlayer1)
     int levelChosen = 0;
     int player1Chosen = 0;
     int youPlayer1 = 0;
-    char currentMap = 'A';
+    char currentMap = 'S';
 
     // Main Loop
     // Not using else if as that limits the amount of changes per
@@ -38,23 +38,33 @@ void main_menu(int num_levels, char* level, bool* isPlayer1)
         if (rec_got_data()) {
             // Data can  be received, get the data and deal with it
             unsigned char received = rec_get_data();
-            if (received == 171 && !player1Chosen) {
+            if (rec_player(received) && !player1Chosen) {
                 youPlayer1 = 0;
                 *isPlayer1 = false;
                 player1Chosen = 1;
+                currentMap = 'W';
             }
             if (received >= 'A' && received <= ('A' + num_levels)) {
                 levelChosen = 1;
-                currentMap = received;
-                *level = currentMap;
+                *level = received;
             }
         }
 
+        if (nav_shoot() && player1Chosen && youPlayer1) {
+            // Player has selected the current map, current map needs
+            // to be selected and loop needs to break.
+            transmit_map(currentMap);
+            *level = currentMap;
+            levelChosen = 1;
+            *isPlayer1 = true;
+            build_level(currentMap);
+        }
         if (nav_shoot() && !player1Chosen) {
             // Someone has pressed the button, make them player 1.
             transmit_player1();
             player1Chosen = 1;
             youPlayer1 = 1;
+            currentMap = 'A';
         }
         if (nav_getmhorizontal() == 'E') {
             // Player moved nav switch east.
@@ -70,15 +80,7 @@ void main_menu(int num_levels, char* level, bool* isPlayer1)
             else
                 currentMap -= 1;
         }
-        if (nav_shoot() && player1Chosen && youPlayer1) {
-            // Player has selected the current map, current map needs
-            // to be selected and loop needs to break.
-            transmit_map(currentMap);
-            *level = currentMap;
-            levelChosen = 1;
-            *isPlayer1 = true;
-            build_level(currentMap);
-        }
+
     }
     disp_clear_character();
 }
