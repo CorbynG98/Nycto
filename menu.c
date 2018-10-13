@@ -44,6 +44,7 @@ void main_menu(int num_levels, char* level, bool* isPlayer1)
                 player1Chosen = 1;
             }
             if (received >= 'A' && received <= ('A' + num_levels)) {
+                levelChosen = 1;
                 currentMap = received;
                 *level = currentMap;
             }
