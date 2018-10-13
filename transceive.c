@@ -12,6 +12,9 @@ void rec_get_laser(int[], char);
 char encode_pos_laser(int[], char);
 char encode_position(int[]);*/
 
+#define SETPLAYER1 171
+#define LOSS 172
+
 void transmit_pos(int position[])
 {
     // Transmit position
@@ -20,12 +23,15 @@ void transmit_pos(int position[])
 }
 
 void transmit_player1(void) {
-    char player1choice = 171;
-    ir_uart_putc(player1choice);
+    ir_uart_putc(SETPLAYER1);
 }
 
 void transmit_map(char currentMap) {
     ir_uart_putc(currentMap);
+}
+
+void transmit_loss(void) {
+    ir_uart_putc(LOSS);
 }
 
 unsigned char rec_get_data(void)

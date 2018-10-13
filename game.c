@@ -12,17 +12,44 @@
 #include "menu.h"
 
 #define PACER_RATE 250
-
 #define NUM_LEVELS 3
+
+void game_init(int position[2], char* direction, char level, bool isPlayer1) {
+    if (level == 'A') {
+        if (isPlayer1) {
+            position[0] = 0;
+            position[1] = 0;
+            *direction = 'S';
+        } else {
+            position[0] = 4;
+            position[1] = 6;
+            *direction = 'N';
+        }
+    } else {
+        if (!isPlayer1) {
+            position[0] = 0;
+            position[1] = 0;
+            *direction = 'S';
+        } else {
+            position[0] = 4;
+            position[1] = 6;
+            *direction = 'N';
+        }
+    }
+}
 
 int main (void)
 {
     int position[2] = {1,1};
     bool got_minput = false;
     char direction;
+    char level;
+    bool isPlayer1;
 
     static char debugCharacter = 'A';
-    //int health = 3;
+
+    bool gameWon = false;
+    bool gameLost = false;
 
     //all the usual inits
     system_init ();
@@ -36,7 +63,8 @@ int main (void)
     pacer_init (PACER_RATE);
 
     //
-    main_menu(NUM_LEVELS);
+    main_menu(NUM_LEVELS, &level, &isPlayer1);
+    game_init(position, &direction, level, isPlayer1);
 
     while (1)
     {
@@ -44,6 +72,11 @@ int main (void)
         pacer_wait();
         navswitch_update();
         disp_update();
+
+        //if enemy was hit, stop
+        //if (rec_win) {
+        //    gameWon = true;
+        //}
 
         //take input and transmit
         got_minput = nav_getminput(&direction);//got movement input, if so changed direction
@@ -78,6 +111,11 @@ int main (void)
                 int laser[3];
                 rec_get_laser(laser, data);//convert laser data to three integers
                 disp_add_enemy_laser(laser);
+                //if (laser_hit_self(laser)) {
+                //    //if hit by enemy laser, we lose
+                //    transmit_loss();
+                //    gameLost = true;
+                //}
             }
         }
         //do this at required frequency

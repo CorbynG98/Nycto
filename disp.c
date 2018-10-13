@@ -22,8 +22,8 @@ static Player self = {0, 0, 0};
 static Player enemy = {0, 0, 0};
 
 //static game variables
-static bool gameWon = false;
-static bool gameLost = false;
+static bool dispGameWon = false;
+static bool dispGameLost = false;
 static int winFlashCounter = DISP_WIN_FLASH_TIME;//length of blue light flash at end
 static char* GAMEWON = "WIN";
 static char* GAMELOST = "LOSE";
@@ -130,12 +130,12 @@ bool fader(int counter, int max) {
 
 /** will display text and flash light */
 void disp_game_win(void) {
-    gameWon = true;
+    dispGameWon = true;
 }
 
 /** will display text */
 void disp_game_lost(void) {
-    gameLost = true;
+    dispGameLost = true;
 }
 
 /** displays a character using tinygl */
@@ -147,10 +147,16 @@ void disp_character (char character)
     tinygl_text (buffer);
 }
 
+/** clears a character using tinygl */
+void disp_clear_character(void)
+{
+    disp_character(' ');
+}
+
 /** deals with displaying current instances */
 void disp_update(void)
 {
-    if (gameWon) {
+    if (dispGameWon) {
         //blue light flash
         if (winFlashCounter == -DISP_WIN_FLASH_TIME) {
             winFlashCounter = DISP_WIN_FLASH_TIME;
@@ -164,7 +170,7 @@ void disp_update(void)
             winFlashCounter--;
         }
         tinygl_text (GAMEWON);
-    } else if (gameLost) {
+    } else if (dispGameLost) {
         tinygl_text (GAMELOST);
     } else {
 

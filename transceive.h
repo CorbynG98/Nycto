@@ -10,6 +10,9 @@ void transmit_player1(void);
 /** Transmits the map the player 1 selected. **/
 void transmit_map(char currentMap);
 
+/** Transmits that we have been hit */
+void transmit_loss(void);
+
 /** get the data received from the ir device **/
 unsigned char rec_get_data(void);
 

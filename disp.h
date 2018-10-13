@@ -46,6 +46,9 @@ void disp_game_lost(void);
 /** displays a character using tinygl */
 void disp_character (char character);
 
+/** clears a character using tinygl */
+void disp_clear_character(void);
+
 /** deals with displaying current instances */
 void disp_update(void);
 

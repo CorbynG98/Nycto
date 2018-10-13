@@ -18,28 +18,29 @@ void build_level(char);
 void main_menu(int num_levels, char* level, bool* isPlayer1)
 {
     // Variables
-    int levelChosen = 1;
+    int levelChosen = 0;
     int player1Chosen = 0;
     int youPlayer1 = 0;
     char currentMap = 'A';
 
-    // Display the current map (character)
-    disp_character(currentMap);
-
     // Main Loop
     // Not using else if as that limits the amount of changes per
     // loop iteration
-    while(levelChosen) {
+    while(!levelChosen) {
 
         pacer_wait();
         navswitch_update();
         tinygl_update ();
+
+        // Display the current map (character)
+        disp_character(currentMap);
 
         if (rec_got_data()) {
             // Data can  be received, get the data and deal with it
             unsigned char received = rec_get_data();
             if (received == 171 && !player1Chosen) {
                 youPlayer1 = 0;
+                *isPlayer1 = false;
                 player1Chosen = 1;
             }
             if (received >= 'A' && received <= ('A' + num_levels)) {
@@ -73,14 +74,12 @@ void main_menu(int num_levels, char* level, bool* isPlayer1)
             // to be selected and loop needs to break.
             transmit_map(currentMap);
             *level = currentMap;
-            levelChosen = 0;
+            levelChosen = 1;
             *isPlayer1 = true;
-            buildLevel(currentMap);
-        }
-        if (levelChosen) {
-            *isPlayer1 = false;
+            build_level(currentMap);
         }
     }
+    disp_clear_character();
 }
 
 void build_level(char map) {
