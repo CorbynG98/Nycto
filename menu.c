@@ -36,7 +36,7 @@ void main_menu(char* level, bool* isPlayer1, int position[], char* direction, ui
         tinygl_update ();
 
         // Display the current map (character)
-        if (currentMap == 'S') {
+        if (currentMap == 'S' || currentMap == 'W') {
             disp_character(currentMap);
         } else {
             disp_clear_character();
@@ -57,7 +57,9 @@ void main_menu(char* level, bool* isPlayer1, int position[], char* direction, ui
             if (received >= 'A' && received <= ('A' + NUM_LEVELS - 1)) {
                 levelChosen = 1;
                 set_player_pos(position, direction, *isPlayer1, *level);
+                currentMap = received;
                 *level = received;
+                build_level(currentMap, bitmap);
             }
         }
 
