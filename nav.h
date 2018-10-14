@@ -1,3 +1,11 @@
+/*
+ * File:   nav.c
+ * Author: Corbyn Greenwood
+ * Date:   12 Oct 2018
+ * Descr:  Header file for nav.c, allows other modules to use the
+ *         nav switch.
+*/
+
 #ifndef NAV_H
 #define NAV_H
 

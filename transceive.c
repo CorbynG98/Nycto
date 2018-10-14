@@ -1,20 +1,19 @@
+/*
+ * File:   transceive.c
+ * Author: Corbyn Greenwood
+ * Date:   12 Oct 2018
+ * Descr:  Deals with transmission and receiving from board to board
+ *         for player position and shot detection.
+*/
+
 #include "system.h"
 #include "ir_uart.h"
 #include "transceive.h"
 
-// function declarations
-/*void transmit_pos(int);
-char rec_get_data(void);
-void transmit_laser(int[], char);
-int rec_got_data(void);
-void rec_get_enemy(int[], char);
-void rec_get_laser(int[], char);
-char encode_pos_laser(int[], char);
-char encode_position(int[]);*/
-
 #define SETPLAYER1 171
 #define LOSS 172
 
+/** encodes and transmits the position **/
 void transmit_pos(int position[])
 {
     // Transmit position
@@ -22,26 +21,33 @@ void transmit_pos(int position[])
     ir_uart_putc(transmit_char);
 }
 
+/** transmits that one of the boards has become player 1 **/
 void transmit_player1(void) {
     ir_uart_putc(SETPLAYER1);
 }
 
+/** transmits the selected map so both boards have the same level **/
 void transmit_map(char currentMap) {
     ir_uart_putc(currentMap);
 }
 
+/** transmits to the other board that they lost the game. **/
 void transmit_loss(void) {
     ir_uart_putc(LOSS);
 }
 
+/** returns if received data is 171, receving board becomes
+ *  player 2 if they get true here **/
 bool rec_player(unsigned char data) {
     return data == 171;
 }
 
+/** returns true if data received is 172, meaning they won the game **/
 bool rec_win(unsigned char data) {
     return data == 172;
 }
 
+/** receives any data from the ir device  **/
 unsigned char rec_get_data(void)
 {
     // Receive position
@@ -49,6 +55,7 @@ unsigned char rec_get_data(void)
     return received;
 }
 
+/** Encodes the position and laser and then sends the single character **/
 void transmit_laser(int position[], char direction) {
     // Transmit shot
     // Still need todo this will only be like 3 lines :D
@@ -56,6 +63,8 @@ void transmit_laser(int position[], char direction) {
     ir_uart_putc(transmit_las_pos);
 }
 
+/** checks if the received data is just an enemy position or if it is also a
+ *  laser direction **/
 int rec_is_enemy(unsigned char input)
 {
     // Check if the input is only an enemy position without laser
@@ -65,11 +74,14 @@ int rec_is_enemy(unsigned char input)
     return 0;
 }
 
+/** returns true if the ir device is ready to receive data **/
 int rec_got_data(void) {
     // Check that the ir device is ready to receive data.
     return ir_uart_read_ready_p();
 }
 
+/** given an array of positions, decodes the received data and sets
+ *  the x and y, [0] and [1] of the position from the inpu **/
 void rec_get_enemy(int enemy[], unsigned char input)
 {
     // decode the position of the character.
@@ -82,6 +94,8 @@ void rec_get_enemy(int enemy[], unsigned char input)
     enemy[1] = count;
 }
 
+/** Given an array for the position and laser direction, fills in the information
+ *  after decoding the information from input **/
 void rec_get_laser(int laser[], unsigned char input)
 {
     // from the input, decode the data so we get the position and the
@@ -111,6 +125,7 @@ void rec_get_laser(int laser[], unsigned char input)
 
 }
 
+/** encodes the laser and character position into a single character **/
 unsigned char encode_pos_laser(int position[], char direction)
 {
     // Encode the position so we can transmit
@@ -133,6 +148,7 @@ unsigned char encode_pos_laser(int position[], char direction)
     return 255;
 }
 
+/** encodes the character position into a single character **/
 unsigned char encode_position(int position[])
 {
     // Encode the position so we can transmit

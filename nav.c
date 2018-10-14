@@ -1,3 +1,11 @@
+/*
+ * File:   nav.c
+ * Author: Corbyn Greenwood
+ * Date:   12 Oct 2018
+ * Descr:  nav switch control module. deals with inputs from the nav
+ *         switch.
+*/
+
 #include "system.h"
 #include "stdbool.h"
 #include "navswitch.h"
@@ -37,6 +45,8 @@ bool nav_move(int position[], char* prev_dir) {
     return true;
 }
 
+/** Gets a horizontal nav switch event. Used for main menu
+ *  level selection **/
 char nav_getmhorizontal(void) {
     if (navswitch_push_event_p (NAVSWITCH_EAST))
         return 'E';
@@ -44,21 +54,6 @@ char nav_getmhorizontal(void) {
         return 'W';
     return 'Q';
 }
-
-/* char nav_delta(position, last_pos) {
-    // Calculate the direction the player has moved in.
-    if (last_pos[0] - position[0] > 0) {
-        return 'E';
-    } else if (last_pos[0] - position[0] < 0) {
-        return 'W';
-    } else if (last_pos[1] - position[1] > 0) {
-        return 'N';
-    } else if (last_pos[1] - position[1] < 0) {
-        return 'S';
-    }
-    return NULL;
-
-} */
 
 /** Return true if the player tried to shoot. */
 bool nav_shoot(void) {

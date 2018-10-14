@@ -1,3 +1,11 @@
+/*
+ * File:   transceive.h
+ * Author: Corbyn Greenwood
+ * Date:   12 Oct 2018
+ * Descr:  Header file for the transceive.c module, allowing modules
+ *         including this to send data between the boards.
+*/
+
 #ifndef TRANSCEIVE_H
 #define TRANSCEIVE_H
 

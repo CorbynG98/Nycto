@@ -1,3 +1,11 @@
+/*
+ * File:   menu.h
+ * Author: Corbyn Greenwood
+ * Date:   12 Oct 2018
+ * Descr:  Main menu header file so the other modules have access
+ *         to these functions
+*/
+
 #ifndef MENU_H
 #define MENU_H
 

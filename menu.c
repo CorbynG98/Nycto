@@ -1,3 +1,11 @@
+/*
+ * File:   menu.c
+ * Author: Corbyn Greenwood
+ * Date:   12 Oct 2018
+ * Descr:  main menu for the game, controls level selection
+ *         and setting who is player 1 and player 2.
+*/
+
 #include "system.h"
 #include "navswitch.h"
 #include "tinygl.h"
