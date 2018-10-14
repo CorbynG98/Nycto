@@ -13,6 +13,7 @@
 #include "menu.h"
 
 #define PACER_RATE 250
+#define DISP_TIME 60
 #define NPC_WAIT_TIME 200
 #define END_WAIT_TIME 200
 
@@ -89,7 +90,7 @@ int main (void)
         } else if (gameLost) {
             if (end_counter >= END_WAIT_TIME) {
                 disp_game_lose();
-            } else if (end_counter % 30 == 0){
+            } else if (end_counter % DISP_TIME == 0){
                 transmit_pos(position);
                 end_counter++;
             } else {
@@ -98,6 +99,9 @@ int main (void)
         } else if (gameWon) {
             if (end_counter >= END_WAIT_TIME) {
                 disp_game_win();
+            } else if (end_counter % DISP_TIME == 15){
+                transmit_pos(position);
+                end_counter++;
             } else {
                 end_counter++;
             };
