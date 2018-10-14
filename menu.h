@@ -6,7 +6,7 @@
 void main_menu(char* level, bool* isPlayer1, int position[], char* direction, uint8_t bitmap[]);
 
 /** Builds the currently selected level **/
-void build_level(char map, uint8_t bitmap);
+void build_level(char map, uint8_t bitmap, int isChosen);
 
 /** Places the player in the start position **/
 void set_player_pos(int position[], char* direction, bool isPlayer1, char level);

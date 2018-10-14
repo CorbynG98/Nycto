@@ -14,7 +14,7 @@
 #define MESSAGE_RATE 10
 #define NUM_LEVELS 3
 
-void build_level(char, uint8_t[]);
+void build_level(char, uint8_t[], int isChosen);
 void set_player_pos(int[], char*, bool, char);
 
 /** Loop untill a level has been selected by the player **/
@@ -36,13 +36,13 @@ void main_menu(char* level, bool* isPlayer1, int position[], char* direction, ui
         tinygl_update ();
 
         // Display the current map (character)
-        if (currentMap == 'S') {
+        if (currentMap == 'S' || currentMap == 'W') {
             disp_character(currentMap);
         } else {
             disp_clear_character();
             // Build the currently selected level for the player to see.
             display_clear();
-            build_level(currentMap, bitmap);
+            build_level(currentMap, bitmap, 0);
         }
 
         if (rec_got_data()) {
@@ -56,8 +56,9 @@ void main_menu(char* level, bool* isPlayer1, int position[], char* direction, ui
             }
             if (received >= 'A' && received <= ('A' + NUM_LEVELS - 1)) {
                 levelChosen = 1;
-                set_player_pos(position, direction, *isPlayer1, *level);
                 *level = received;
+                build_level(received, bitmap, 1);
+                set_player_pos(position, direction, *isPlayer1, *level);
             }
         }
 
@@ -68,6 +69,7 @@ void main_menu(char* level, bool* isPlayer1, int position[], char* direction, ui
             *level = currentMap;
             levelChosen = 1;
             *isPlayer1 = true;
+            build_level(currentMap, bitmap, 1);
             set_player_pos(position, direction, *isPlayer1, *level);
         }
         if (nav_shoot() && !player1Chosen) {
@@ -95,8 +97,9 @@ void main_menu(char* level, bool* isPlayer1, int position[], char* direction, ui
     disp_clear_character();
 }
 
-void build_level(char map, uint8_t bitmap[]) {
+void build_level(char map, uint8_t bitmap[], int isChosen) {
     // Where the map gets made
+
     if (map == 'A') {
         // Build map A
         bitmap[0] = 0x00;
@@ -111,8 +114,10 @@ void build_level(char map, uint8_t bitmap[]) {
         bitmap[2] = 0x00;
         bitmap[3] = 0x76;
         bitmap[4] = 0x00;
-        int laser[3] = {0, 3, 'E'};
-        disp_add_npc_laser(laser);
+        if (isChosen) {
+            int laser[3] = {0, 3, 'E'};
+            disp_add_npc_laser(laser);
+        }
     } else if (map == 'C') {
         // Build map C
         bitmap[0] = 0x00;
@@ -121,6 +126,7 @@ void build_level(char map, uint8_t bitmap[]) {
         bitmap[3] = 0x22;
         bitmap[4] = 0x00;
     }
+
     disp_bitmap(bitmap);
 }
 

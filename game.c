@@ -13,6 +13,8 @@
 #include "menu.h"
 
 #define PACER_RATE 250
+#define NPC_WAIT_TIME 200
+#define END_WAIT_TIME 200
 
 int main (void)
 {
@@ -21,7 +23,9 @@ int main (void)
     char direction;
     char level;
     bool isPlayer1;
-    int counter = 0;
+
+    int npc_counter = 0;
+    int end_counter = 0;
 
     //basically an array of chars (8-bit ints)
     uint8_t bitmap[5] = {0x00, 0x00, 0x00, 0x00, 0x00};
@@ -71,18 +75,32 @@ int main (void)
             }
             if (have_npc_laser()) {
                 //if npc laser exists, turn it on occasionally
-                counter++;
-                if (counter >= 200) {
+                npc_counter++;
+                if (npc_counter >= NPC_WAIT_TIME) {
                     disp_refresh_npc_laser();
-                    counter = 0;
+                    npc_counter = 0;
                 }
                 if (hit_npc_laser(position, bitmap)) {
                     //if hit by npc laser, lose
                     transmit_loss();
                     gameLost = true;
-                    disp_game_lose();
                 }
             }
+        } else if (gameLost) {
+            if (end_counter >= END_WAIT_TIME) {
+                disp_game_lose();
+            } else if (end_counter % 30 == 0){
+                transmit_pos(position);
+                end_counter++;
+            } else {
+                end_counter++;
+            }
+        } else if (gameWon) {
+            if (end_counter >= END_WAIT_TIME) {
+                disp_game_win();
+            } else {
+                end_counter++;
+            };
         }
 
         //receive data and display
@@ -99,7 +117,7 @@ int main (void)
                 disp_add_enemy(enemy);
             } else if (rec_win(data)) {
                 gameWon = true;
-                disp_game_win();
+                transmit_pos(position);
             } else {
                 int laser[3];
                 rec_get_laser(laser, data);//convert laser data to three integers
@@ -108,7 +126,6 @@ int main (void)
                     //if hit by enemy laser, we lose
                     transmit_loss();
                     gameLost = true;
-                    disp_game_lose();
                 }
             }
         }
