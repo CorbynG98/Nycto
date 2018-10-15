@@ -1,4 +1,4 @@
-# Game Name
+# Space Gladiator
 
 This is an arena shooter game, with level selection. The goal of this game is to find and shoot the other player with your laser. The catch however, is that you can only see the other player when they shoot or hit a wall and the same goes for yourself, you only see your own position when you hit a wall or shoot your laser.
 
@@ -30,4 +30,5 @@ When the game is over the game will freeze for about a second showing both playe
 
 ## Acknowledgments
 
-* **Eletrical / Computer Engineering / Computer Science** - *ENCE260 Fun Kit repository, Fun Kit board itself*
+* **Eletrical Engineering / Computer Engineering / Computer Science** - *ENCE260 Fun Kit repository, Fun Kit board itself*
+* **Derrick Edward** - *Name of the game*
