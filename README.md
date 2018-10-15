@@ -27,9 +27,9 @@ When the game is over the game will freeze for about a second showing both playe
 
 ## Authors
 
-* **Corbyn Greenwood** - *Main menu, transmitting and receiving, nav switch*
+* **Corbyn Greenwood** - *main menu, transmitting and receiving, nav switch*
 * **Benjamin Scott** - *main game loop, display module*
-* **Joint Effort** - *bug fixing, make file, headers*
+* **Joint Effort** - *bug fixing, make file, headers, readme*
 
 ## Acknowledgments
 
