@@ -22,8 +22,11 @@
 #define MESSAGE_RATE 10
 #define NUM_LEVELS 3
 
+/** Function declarations **/
 void build_level(char, uint8_t[], int isChosen);
 void set_player_pos(int[], char*, bool, char);
+void set_pos(int[], int, int);
+void set_bitmap(uint8_t[], uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
 
 /** Loop untill a level has been selected by the player **/
 void main_menu(char* level, bool* isPlayer1, int position[], char* direction, uint8_t bitmap[])
@@ -110,64 +113,85 @@ void build_level(char map, uint8_t bitmap[], int isChosen) {
 
     if (map == 'A') {
         // Build map A
-        bitmap[0] = 0x00;
-        bitmap[1] = 0x00;
-        bitmap[2] = 0x77;
-        bitmap[3] = 0x00;
-        bitmap[4] = 0x00;
+        set_bitmap(bitmap, 0x00, 0x00, 0x77, 0x00, 0x00);
+        //bitmap[0] = 0x00;
+        //bitmap[1] = 0x00;
+        //bitmap[2] = 0x77;
+        //bitmap[3] = 0x00;
+        //bitmap[4] = 0x00;
     } else if (map == 'B') {
         // Build map B
-        bitmap[0] = 0x00;
-        bitmap[1] = 0x37;
-        bitmap[2] = 0x00;
-        bitmap[3] = 0x76;
-        bitmap[4] = 0x00;
+        set_bitmap(bitmap, 0x00, 0x37, 0x00, 0x76, 0x00);
+        //bitmap[0] = 0x00;
+        //bitmap[1] = 0x37;
+        //bitmap[2] = 0x00;
+        //bitmap[3] = 0x76;
+        //bitmap[4] = 0x00;
         if (isChosen) {
             int laser[3] = {0, 3, 'E'};
             disp_add_npc_laser(laser);
         }
     } else if (map == 'C') {
         // Build map C
-        bitmap[0] = 0x00;
-        bitmap[1] = 0x22;
-        bitmap[2] = 0x2A;
-        bitmap[3] = 0x22;
-        bitmap[4] = 0x00;
+        set_bitmap(bitmap, 0x00, 0x22, 0x2A, 0x22, 0x00);
+        //bitmap[0] = 0x00;
+        //bitmap[1] = 0x22;
+        //bitmap[2] = 0x2A;
+        //bitmap[3] = 0x22;
+        //bitmap[4] = 0x00;
     }
 
     disp_bitmap(bitmap);
 }
 
+/** Sets the player position on the board **/
 void set_player_pos(int position[], char* direction, bool isPlayer1, char level) {
     if (level == 'A') {
-        if (isPlayer1) {
-            position[0] = 0;
-            position[1] = 0;
+        if (!isPlayer1) {
+            set_pos(position, 0, 0);
+            //position[0] = 0;
+            //position[1] = 0;
             *direction = 'S';
         } else {
-            position[0] = 4;
-            position[1] = 6;
+            set_pos(position, 4, 6);
+            //position[0] = 4;
+            //position[1] = 6;
             *direction = 'N';
         }
     } else if (level == 'B') {
         if (!isPlayer1) {
-            position[0] = 0;
-            position[1] = 0;
-            *direction = 'S';
+            set_pos(position, 0, 0);Sets the x and y coordinates on the playe
+            //position[0] = 0;
+            //position[1] = 0;
+            *direction = 'S';Sets the x and y coordinates on the playe
         } else {
-            position[0] = 4;
-            position[1] = 6;
+            set_pos(position, 4, 6);
+            //position[0] = 4;
+            //position[1] = 6;
             *direction = 'N';
-        }
+        }Sets the x and y coordinates on the playe
     } else if (level == 'C') {
         if (!isPlayer1) {
-            position[0] = 1;
-            position[1] = 0;
-            *direction = 'E';
-        } else {
-            position[0] = 3;
-            position[1] = 6;
-            *direction = 'W';
-        }
+            set_pos(position, 1, 0);
+            //position[0] = 1;
+            //position[1] = 0;
+        } else {}
     }
+}Sets the x and y coordinates on the playe
+
+/** Sets the x and y coordinates on the player **/
+void set_pos(int position[], int x, int y)
+{
+    position[0] = x;
+    position[1] = y;
+}
+
+/** Sets the values in the bitmap **/
+void set_bitmap(uint8_t bitmap[], uint8_t val1, uint8_t val2, uint8_t val3, uint8_t val4, uint8_t val5)
+{
+    bitmap[0] = val1;
+    bitmap[1] = val2;
+    bitmap[2] = val3;
+    bitmap[3] = val4;
+    bitmap[4] = val5;
 }
