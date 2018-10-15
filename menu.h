@@ -20,9 +20,9 @@ void build_level(char map, uint8_t bitmap, int isChosen);
 void set_player_pos(int position[], char* direction, bool isPlayer1, char level);
 
 /** Puts x and y coordinates into the position array **/
-void set_pos(int position[], int x, int y)
+void set_pos(int position[], int x, int y);
 
 /** Puts values into the bitmap**/
-void set_bitmap(uint8_t bitmap[], uint8_t val1, uint8_t val2, uint8_t val3, uint8_t val4, uint8_t val5)
+void set_bitmap(uint8_t bitmap[], uint8_t val1, uint8_t val2, uint8_t val3, uint8_t val4, uint8_t val5);
 
 #endif

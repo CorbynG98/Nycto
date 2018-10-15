@@ -160,16 +160,16 @@ void set_player_pos(int position[], char* direction, bool isPlayer1, char level)
         }
     } else if (level == 'B') {
         if (!isPlayer1) {
-            set_pos(position, 0, 0);Sets the x and y coordinates on the playe
+            set_pos(position, 0, 0);
             //position[0] = 0;
             //position[1] = 0;
-            *direction = 'S';Sets the x and y coordinates on the playe
+            *direction = 'S';
         } else {
             set_pos(position, 4, 6);
             //position[0] = 4;
             //position[1] = 6;
             *direction = 'N';
-        }Sets the x and y coordinates on the playe
+        }
     } else if (level == 'C') {
         if (!isPlayer1) {
             set_pos(position, 1, 0);
@@ -177,7 +177,7 @@ void set_player_pos(int position[], char* direction, bool isPlayer1, char level)
             //position[1] = 0;
         } else {}
     }
-}Sets the x and y coordinates on the playe
+}
 
 /** Sets the x and y coordinates on the player **/
 void set_pos(int position[], int x, int y)
