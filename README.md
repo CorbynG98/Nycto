@@ -24,9 +24,10 @@ When the game is over the game will freeze for about a second showing both playe
 
 ## Authors
 
-* **Corbyn Greenwood** - *Main menu, transmitting and receiving, nav switch, bug fixing*
+* **Corbyn Greenwood** - *Main menu, transmitting and receiving, nav switch*
 * **Benjamin Scott** - *main game loop, display module*
+* **Joint Effort** - *bug fixing, make file, headers*
 
 ## Acknowledgments
 
-* Eletrical / Computer Engineering / Computer Science - *ENCE260 Fun Kit repository, Fun Kit board itself*
+* **Eletrical / Computer Engineering / Computer Science** - *ENCE260 Fun Kit repository, Fun Kit board itself*
