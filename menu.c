@@ -114,19 +114,9 @@ void build_level(char map, uint8_t bitmap[], int isChosen) {
     if (map == 'A') {
         // Build map A
         set_bitmap(bitmap, 0x00, 0x00, 0x77, 0x00, 0x00);
-        //bitmap[0] = 0x00;
-        //bitmap[1] = 0x00;
-        //bitmap[2] = 0x77;
-        //bitmap[3] = 0x00;
-        //bitmap[4] = 0x00;
     } else if (map == 'B') {
-        // Build map B
+        // Build map B and set level laser
         set_bitmap(bitmap, 0x00, 0x37, 0x00, 0x76, 0x00);
-        //bitmap[0] = 0x00;
-        //bitmap[1] = 0x37;
-        //bitmap[2] = 0x00;
-        //bitmap[3] = 0x76;
-        //bitmap[4] = 0x00;
         if (isChosen) {
             int laser[3] = {0, 3, 'E'};
             disp_add_npc_laser(laser);
@@ -134,11 +124,6 @@ void build_level(char map, uint8_t bitmap[], int isChosen) {
     } else if (map == 'C') {
         // Build map C
         set_bitmap(bitmap, 0x00, 0x22, 0x2A, 0x22, 0x00);
-        //bitmap[0] = 0x00;
-        //bitmap[1] = 0x22;
-        //bitmap[2] = 0x2A;
-        //bitmap[3] = 0x22;
-        //bitmap[4] = 0x00;
     }
 
     disp_bitmap(bitmap);
@@ -149,32 +134,22 @@ void set_player_pos(int position[], char* direction, bool isPlayer1, char level)
     if (level == 'A') {
         if (!isPlayer1) {
             set_pos(position, 0, 0);
-            //position[0] = 0;
-            //position[1] = 0;
             *direction = 'S';
         } else {
             set_pos(position, 4, 6);
-            //position[0] = 4;
-            //position[1] = 6;
             *direction = 'N';
         }
     } else if (level == 'B') {
         if (!isPlayer1) {
             set_pos(position, 0, 0);
-            //position[0] = 0;
-            //position[1] = 0;
             *direction = 'S';
         } else {
             set_pos(position, 4, 6);
-            //position[0] = 4;
-            //position[1] = 6;
             *direction = 'N';
         }
     } else if (level == 'C') {
         if (!isPlayer1) {
             set_pos(position, 1, 0);
-            //position[0] = 1;
-            //position[1] = 0;
             *direction = 'E';
         } else {
             set_pos(position, 3, 6);
