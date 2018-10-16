@@ -1,9 +1,8 @@
-/*
- * File:   nav.c
- * Author: Corbyn Greenwood
- * Date:   12 Oct 2018
- * Descr:  Header file for nav.c, allows other modules to use the
- *         nav switch.
+/** @file   nav.h
+    @author Corbyn Greenwood
+    @date   12 Oct 2018
+    @brief  Nav switch control module. Deals with inputs from the nav
+            switch.
 */
 
 #ifndef NAV_H

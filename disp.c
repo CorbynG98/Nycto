@@ -1,16 +1,15 @@
+/** @file   disp.c
+    @author Benjamin Scott
+    @date   16 October 2018
+    @brief  Display manager
+*/
+
 #include "disp.h"
 #include "tinygl.h"
+#include "pacer.h"
 #include "../fonts/font5x7_1.h"
 #include "pio.h"
-#include <stdbool.h>
-
-//customization constants
-#define DISP_RATE 250 //should be the same as PACER_RATE
-#define DISP_TIME 60 //time to display a player for
-#define DISP_LASER_TIME 40 // time to display a laser for
-#define DISP_WIN_FLASH_TIME 80 // time to flash blue for
-#define DISP_NPC_WAIT_MULT 10 // multiple of DISP_LASER_TIME to wait for between shots
-#define MESSAGE_RATE 10
+#include "lasers.h"
 
 //AVR constants
 #define OUTPUT_HIGH 1
@@ -26,24 +25,36 @@ static Player enemy = {0, 0, 0};
 //static game variables
 static bool dispGameWon = false;
 static bool dispGameLost = false;
+static bool textSet = false; /**game end text should only be set once
+                                when scrolling, otherwise it gets stuck */
 static int winFlashCounter = DISP_WIN_FLASH_TIME;//length of blue light flash at end
-static char* GAMEWON = "WIN";
-static char* GAMELOST = "LOSE";
+static char* GAMEWON = " WIN";
+static char* GAMELOST = " LOSE";
 
-static char dispDebugChar = 'D';
-
-char getDebugChar(void) {
-    return dispDebugChar;
-}
-
-/** sets screen off */
+/** initializes tinygl and blue LED */
 void disp_init(void)
 {
-    tinygl_init (DISP_RATE);
+    tinygl_init (PACER_RATE);
     tinygl_font_set (&font5x7_1);
     tinygl_text_speed_set (MESSAGE_RATE);
-    //tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
+    tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
     pio_config_set (LED_PIO, PIO_OUTPUT_LOW);
+    pacer_init (PACER_RATE);// sets frame rate
+}
+
+/** displays a character using tinygl */
+void disp_character (char character)
+{
+    char buffer[2];
+    buffer[0] = character;
+    buffer[1] = '\0';
+    tinygl_text (buffer);
+}
+
+/** clears a character using tinygl */
+void disp_clear_character(void)
+{
+    disp_character(' ');
 }
 
 /** sets given player to a position and displays them temporarily */
@@ -66,7 +77,7 @@ void disp_add_enemy(int position[2])
     disp_add_player(&enemy, position);
 }
 
-/** sets given laserPtr to laser*/
+/** sets the given laserPtr's Laser to the given laser*/
 void disp_add_laser(Laser* laserPtr, int laser[3])
 {
     laserPtr->counter = DISP_LASER_TIME;
@@ -118,112 +129,9 @@ void disp_laser(Laser laser, const uint8_t level[], bool isNPC)
                       OUTPUT_HIGH);
 }
 
-/** given a starting position, find laser coordinates */
-void set_laser_coords(int* startx, int* starty, int* endx, int* endy, char direction, const uint8_t level[], bool isNPC)
-{
-    //set default position if hit no walls, moving one position past the player
-    int increment = 1;
-    if (isNPC)
-        increment = 0;
-    switch (direction) {
-        case 'N':
-            (*starty)-=increment;
-            *endy = 0;
-            break;
-        case 'E':
-            (*startx)+=increment;
-            *endx = TINYGL_WIDTH;
-            break;
-        case 'S':
-            (*starty)+=increment;
-            *endy = TINYGL_HEIGHT;
-            break;
-        case 'W':
-            (*startx)-=increment;
-            *endx = 0;
-            break;
-    }
-
-    //check if laser hits a wall
-    bool hitWall = false;
-    if (*startx < *endx || *starty < *endy) {
-        //if pointing down or right
-        int i=*startx;
-        while (i <= *endx && !hitWall) {
-            int j=*starty;
-            while (j <= *endy && !hitWall) {
-                if (level[i] & (1 << j)) {
-                    //if level has a wall at i,j
-                    *endx = i;
-                    *endy = j;
-                    hitWall = true;
-                }
-                j++;
-            }
-            i++;
-        }
-    } else {
-        int i=*startx;
-        while (i >= *endx && !hitWall) {
-            int j=*starty;
-            while (j >= *endy && !hitWall) {
-                if (level[i] & (1 << j)) {
-                    //if level has a wall at i,j
-                    *endx = i;
-                    *endy = j;
-                    hitWall = true;
-                }
-                j--;
-            }
-            i--;
-        }
-    }
-
-
-
-}
-
-/** swaps two integers */
-void swap_int(int* x, int* y)
-{
-    int temp = *x;
-    *x = *y;
-    *y = temp;
-}
-
-/** check if we the laser intersects with position, taking into account
- * the level */
-bool laser_hit_self(int laser[3], int position[2], const uint8_t level[], bool isNPC)
-{
-    int endx = laser[0];
-    int endy = laser[1];
-    int startx = laser[0];
-    int starty = laser[1];
-
-    set_laser_coords(&startx ,&starty, &endx, &endy, laser[2], level, isNPC);
-
-    //make sure start is before end
-    if (startx > endx) {
-        swap_int(&startx, &endx);
-    }
-    if (starty > endy) {
-        swap_int(&starty, &endy);
-    }
-
-    //if hit by enemy laser
-    for (int i=startx;i <= endx; i++) {
-        for (int j=starty;j <= endy; j++) {
-            if (position[0] == i && position[1] == j) {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
 /** OBSOLETE: Returns whether an LED should be turned on to establish a
- * fading effect as counter ramps down from max. Causes lag and is
- * basically useless */
+ * fading effect as counter ramps down from max. Barely visible at best
+ * and causes flickering at worst*/
  /*
 bool fader(int counter, int max) {
     if (counter < max/2) {
@@ -242,21 +150,6 @@ void disp_game_win(void) {
 /** will display text */
 void disp_game_lose(void) {
     dispGameLost = true;
-}
-
-/** displays a character using tinygl */
-void disp_character (char character)
-{
-    char buffer[2];
-    buffer[0] = character;
-    buffer[1] = '\0';
-    tinygl_text (buffer);
-}
-
-/** clears a character using tinygl */
-void disp_clear_character(void)
-{
-    disp_character(' ');
 }
 
 /** displays a bitmap, one pixel at a time, because tinygl doesn't
@@ -292,6 +185,7 @@ bool hit_npc_laser(int position[2], const uint8_t level[])
 /** deals with displaying current instances */
 void disp_update(const uint8_t level[])
 {
+    pacer_wait();
     if (dispGameWon) {
         //blue light flash
         if (winFlashCounter == -DISP_WIN_FLASH_TIME) {
@@ -305,9 +199,15 @@ void disp_update(const uint8_t level[])
             pio_output_low (LED_PIO);
             winFlashCounter--;
         }
-        tinygl_text (GAMEWON);
+        if (!textSet) {
+            tinygl_text (GAMEWON);
+            textSet = true;
+        }
     } else if (dispGameLost) {
-        tinygl_text (GAMELOST);
+        if (!textSet) {
+            tinygl_text (GAMELOST);
+            textSet = true;
+        }
     } else {
 
         display_clear ();

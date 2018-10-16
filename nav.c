@@ -1,17 +1,20 @@
-/*
- * File:   nav.c
- * Author: Corbyn Greenwood
- * Date:   12 Oct 2018
- * Descr:  nav switch control module. deals with inputs from the nav
- *         switch.
+/** @file   nav.c
+    @author Corbyn Greenwood
+    @date   12 Oct 2018
+    @brief  nav switch control module. deals with inputs from the nav
+            switch.
 */
 
 #include "system.h"
 #include "stdbool.h"
 #include "navswitch.h"
 #include "nav.h"
+#include "tinygl.h"
 #include <stdint.h>
 #include <string.h>
+
+#define WIDTH_INDEX TINYGL_WIDTH-1
+#define HEIGHT_INDEX TINYGL_HEIGHT-1
 
 /** Initialise and check what button was pressed. */
 bool nav_getminput(char* prev_dir) {
@@ -66,12 +69,12 @@ bool nav_shoot(void) {
 bool nav_hitwallinner(int position[], char move_dir, const uint8_t bitmap[])
 {
     // Check if hit inner walls
-    int toMove[2] = {0,0};
-    toMove[0] = position[0];
-    toMove[1] = position[1];
-    nav_move(toMove, &move_dir);
+    int tempPosition[2] = {0,0};
+    tempPosition[0] = position[0];
+    tempPosition[1] = position[1];
+    nav_move(tempPosition, &move_dir);
 
-    return bitmap[toMove[0]] & (1 << toMove[1]);
+    return bitmap[tempPosition[0]] & (1 << tempPosition[1]);
 }
 
 /** Check if the player is trying to move into a wall. */
@@ -82,10 +85,10 @@ bool nav_hitwall(int position[], char move_dir, const uint8_t bitmap[])
         if (position[1] <= 0)
             return true;
     } else if (move_dir == 'S') {
-        if (position[1] >= 6)
+        if (position[1] >= HEIGHT_INDEX)
             return true;
     } else if (move_dir == 'E') {
-        if (position[0] >= 4)
+        if (position[0] >= WIDTH_INDEX)
             return true;
     } else if (move_dir == 'W') {
         if (position[0] <= 0)

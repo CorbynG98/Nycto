@@ -1,9 +1,8 @@
-/*
- * File:   transceive.h
- * Author: Corbyn Greenwood
- * Date:   12 Oct 2018
- * Descr:  Header file for the transceive.c module, allowing modules
- *         including this to send data between the boards.
+/** @file   transceive.h
+    @author Corbyn Greenwood
+    @date   12 Oct 2018
+    @brief  Deals with transmission and receiving from board to board
+ *          for player position and shot detection.
 */
 
 #ifndef TRANSCEIVE_H

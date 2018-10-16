@@ -1,6 +1,6 @@
 # File:   Makefile
-# Author: M. P. Hayes, UCECE
-# Date:   12 Sep 2010
+# Author: Benjamin Scott, Corbyn Greenwood
+# Date:   10 Oct 2018
 # Descr:  Makefile for game
 
 # Definitions.
@@ -23,6 +23,9 @@ system.o: ../../drivers/avr/system.c ../../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 disp.o: disp.c disp.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+lasers.o: lasers.c lasers.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 nav.o: nav.c nav.h
@@ -73,7 +76,7 @@ prescale.o: ../../drivers/avr/prescale.c ../../drivers/avr/prescale.h ../../driv
 
 
 # Link: create ELF output file from object files.
-game.out: game.o system.o disp.o nav.o menu.o transceive.o pio.o timer.o display.o ledmat.o font.o tinygl.o navswitch.o ir_uart.o usart1.o timer0.o prescale.o pacer.o
+game.out: game.o system.o disp.o lasers.o nav.o menu.o transceive.o pio.o timer.o display.o ledmat.o font.o tinygl.o navswitch.o ir_uart.o usart1.o timer0.o prescale.o pacer.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 

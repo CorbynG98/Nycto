@@ -1,17 +1,24 @@
-/*
- * File:   transceive.c
- * Author: Corbyn Greenwood
- * Date:   12 Oct 2018
- * Descr:  Deals with transmission and receiving from board to board
- *         for player position and shot detection.
+/** @file   transceive.c
+    @author Corbyn Greenwood
+    @date   12 Oct 2018
+    @brief  Deals with transmission and receiving from board to board
+ *          for player position and shot detection.
 */
 
 #include "system.h"
 #include "ir_uart.h"
+#include "tinygl.h"
 #include "transceive.h"
 
-#define SETPLAYER1 171
+#define SETPLAYER1 171 //added constants                                      <--Ben
 #define LOSS 172
+#define MAX 255
+
+#define WIDTH TINYGL_WIDTH
+#define HEIGHT TINYGL_HEIGHT
+#define AREA (TINYGL_WIDTH * TINYGL_HEIGHT)
+#define WIDTH_INDEX TINYGL_WIDTH-1
+#define HEIGHT_INDEX TINYGL_HEIGHT-1
 
 /** encodes and transmits the position **/
 void transmit_pos(int position[])
@@ -36,15 +43,15 @@ void transmit_loss(void) {
     ir_uart_putc(LOSS);
 }
 
-/** returns if received data is 171, receving board becomes
+/** returns if received data is SETPLAYER1, receiving board becomes
  *  player 2 if they get true here **/
 bool rec_player(unsigned char data) {
-    return data == 171;
+    return data == SETPLAYER1;
 }
 
-/** returns true if data received is 172, meaning they won the game **/
+/** returns true if data received is LOSS, meaning receiver won the game **/
 bool rec_win(unsigned char data) {
-    return data == 172;
+    return data == LOSS;
 }
 
 /** receives any data from the ir device  **/
@@ -68,7 +75,7 @@ void transmit_laser(int position[], char direction) {
 int rec_is_enemy(unsigned char input)
 {
     // Check if the input is only an enemy position without laser
-    if (input < 35) {
+    if (input < AREA) {
         return 1;
     }
     return 0;
@@ -86,8 +93,8 @@ void rec_get_enemy(int enemy[], unsigned char input)
 {
     // decode the position of the character.
     int count = 0;
-    while(input > 4 && input < 255) {
-        input = input - 5;
+    while(input > WIDTH_INDEX && input < MAX) {
+        input = input - TINYGL_WIDTH;
         count += 1;
     }
     enemy[0] = input;
@@ -101,23 +108,23 @@ void rec_get_laser(int laser[], unsigned char input)
     // from the input, decode the data so we get the position and the
     // direction of the laser.
     int enemy[2] = {0, 0};
-    if (input < 70) {
-        rec_get_enemy(enemy, input - (35*1));
-        laser[0] = enemy[0];
+    if (input < (AREA*2)) {
+        rec_get_enemy(enemy, input - (AREA*1));
+        laser[0] = enemy[0]; //can make this less repetitive                                       <--Ben
         laser[1] = enemy[1];
         laser[2] = 'N';
-    } else if (input < 105) {
-        rec_get_enemy(enemy, input - (35*2));
+    } else if (input < (AREA*3)) {
+        rec_get_enemy(enemy, input - (AREA*2));
         laser[0] = enemy[0];
         laser[1] = enemy[1];
         laser[2] = 'E';
-    }  else if (input < 140) {
-        rec_get_enemy(enemy, input - (35*3));
+    }  else if (input < (AREA*4)) {
+        rec_get_enemy(enemy, input - (AREA*3));
         laser[0] = enemy[0];
         laser[1] = enemy[1];
         laser[2] = 'S';
-    }  else if (input < 175) {
-        rec_get_enemy(enemy, input - (35*4));
+    }  else if (input < (AREA*5)) {
+        rec_get_enemy(enemy, input - (AREA*4));
         laser[0] = enemy[0];
         laser[1] = enemy[1];
         laser[2] = 'W';
@@ -132,7 +139,7 @@ unsigned char encode_pos_laser(int position[], char direction)
     int x = position[0];
     int y = position[1];
     int z = 0;
-    if (direction == 'N')
+    if (direction == 'N') //could be a switch statement                              <--Ben
         z = 0;
     else if (direction == 'E')
         z = 1;
@@ -141,11 +148,11 @@ unsigned char encode_pos_laser(int position[], char direction)
     else if (direction == 'W')
         z = 3;
     else
-        z = 255;
+        z = MAX;
 
-    if (z != 255)
-        return (x+(5*y)) + (35*(z+1));
-    return 255;
+    if (z != MAX)
+        return (x+(WIDTH*y)) + (AREA*(z+1));
+    return MAX;
 }
 
 /** encodes the character position into a single character **/
@@ -154,5 +161,5 @@ unsigned char encode_position(int position[])
     // Encode the position so we can transmit
     int x = position[0];
     int y = position[1];
-    return (x+(5*y));
+    return (x+(WIDTH*y));
 }

@@ -1,9 +1,8 @@
-/*
- * File:   menu.h
- * Author: Corbyn Greenwood
- * Date:   12 Oct 2018
- * Descr:  Main menu header file so the other modules have access
- *         to these functions
+/** @file   menu.h
+    @author Corbyn Greenwood
+    @date   12 Oct 2018
+    @brief  main menu for the game, controls level selection
+ *          and setting who is player 1 and player 2.
 */
 
 #ifndef MENU_H

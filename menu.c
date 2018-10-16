@@ -1,9 +1,8 @@
-/*
- * File:   menu.c
- * Author: Corbyn Greenwood
- * Date:   12 Oct 2018
- * Descr:  main menu for the game, controls level selection
- *         and setting who is player 1 and player 2.
+/** @file   menu.c
+    @author Corbyn Greenwood
+    @date   12 Oct 2018
+    @brief  main menu for the game, controls level selection
+ *          and setting who is player 1 and player 2.
 */
 
 #include "system.h"
@@ -21,6 +20,8 @@
 
 #define MESSAGE_RATE 10
 #define NUM_LEVELS 3
+#define START_TEXT " BLIND MURDER" //name TBD                               <--Ben
+#define WAIT_TEXT " WAITING..."
 
 /** Function declarations **/
 void build_level(char, uint8_t[], int isChosen);
@@ -34,8 +35,11 @@ void main_menu(char* level, bool* isPlayer1, int position[], char* direction, ui
     // Variables
     int levelChosen = 0;
     int player1Chosen = 0;
-    int youPlayer1 = 0;
+    int youPlayer1 = 0;//isn't this synonymous with isPlayer1                               <--Ben
     char currentMap = 'S';
+
+    // Set initial text
+    tinygl_text(START_TEXT);//changed this                                         <--Ben
 
     // Main Loop
     // Not using else if as that limits the amount of changes per
@@ -47,9 +51,7 @@ void main_menu(char* level, bool* isPlayer1, int position[], char* direction, ui
         tinygl_update ();
 
         // Display the current map (character)
-        if (currentMap == 'S' || currentMap == 'W') {
-            disp_character(currentMap);
-        } else {
+        if (!(currentMap == 'S' || currentMap == 'W')) {
             disp_clear_character();
             // Build the currently selected level for the player to see.
             display_clear();
@@ -64,6 +66,7 @@ void main_menu(char* level, bool* isPlayer1, int position[], char* direction, ui
                 *isPlayer1 = false;
                 player1Chosen = 1;
                 currentMap = 'W';
+                tinygl_text(WAIT_TEXT);// display wait text
             }
             if (received >= 'A' && received <= ('A' + NUM_LEVELS - 1)) {
                 levelChosen = 1;

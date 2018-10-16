@@ -1,34 +1,55 @@
-# Space Gladiator
+# Space Gladiator (Name TBD)
 
-This is an arena shooter game, with level selection. The goal of this game is to find and shoot the other player with your laser. The catch however, is that you can only see the other player when they shoot or hit a wall and the same goes for yourself, you only see your own position when you hit a wall or shoot your laser.
+This is an arena shooter game, having multiple arenas to choose 
+from. The goal is to find and shoot the other player with your 
+laser. The catch however, is that each of you are only visible 
+(to you and your opponent) when you shoot, or bump into a wall.
 
 ### Getting started
 
-make sure to have cloned the ENCE260 funkit repository. This repo has all the required drivers, fonts, utils, etc. required to run this game on the Electrical Computer Engineering UC Fun Kit 4.
+Make sure to have cloned the ENCE260 funkit repository. This 
+repo has all the required drivers, fonts, utils, etc. required 
+to run this game on the Electrical Computer Engineering UC Fun 
+Kit 4.
 
 ### Installing
 
-Clone the repository for this game into a folder in the assignment folder. located in the previously cloned directory.
-Once the game files have been cloned into the correct directory open a console and traverse to this directory.
-run the command make program with the board plugged into the computer (reset the board if there are problems)
+Clone the repository for this game into a folder in the 
+assignment folder. This is located in the previously cloned 
+directory, ence260-ucfk4. For example, this README should be 
+located at ence260-ucfk4/assignment/folder-name/README.md
+
+Now open the terminal and traverse to this directory.
+With the ucfunkit plugged into the computer, Enter the command 
+'make program' (no quotes). 
+Reset the board if there are problems.
 
 ### How to play
 
-- Navswitch left, right, forward and back to control player position
+- Navswitch directions to control player movement
 - Press navswitch in to shoot the laser
 
-On the first screen seen, one of the two boards must press the nav switch button in, this will set them as player 1 and tell the other board that they are now player 2.
-Player 1 can now select a level moving the navswitch left and/or right.
-Once the player has selected a suitable level, player 1 must press the nav switch button in again, this sets the required level and tells the other board what level is selected so they both have the same setup.
+On the first screen (with a big 'S' for Start), one of the two 
+boards must press the nav switch button in, this will set them 
+as Player One and tell the other board that they are now Player 
+Two. Player One can now look through levels by moving the 
+navswitch left and/or right. Once a level is selected by 
+pressing the navswitch in, the level is transmitted to Player 
+Two, and the game begins.
 
-When the game first starts it may look like nothing has happened, however this is not the case as both players are seen untill either a wall is hit or a laser is shot.
-The goal is to try locate the other player and shoot them before they do the same to you.
-When the game is over the game will freeze for about a second showing both player position on the display before, on the winning player showing a W and flashing a blue LED. And on the loosing player shows an L on the LED Matrix.
+When the game first starts it may look like nothing has happened, 
+but do not fear - you are merely invisible. The goal is to try to
+locate the other player and shoot them before they do the same to 
+you. 
+When the game is over, it will freeze for about a second, showing
+both players. Then on the winning player it will show a W and 
+flash the blue LED. And on the losing player it will show only an 
+L.
 
 ## Authors
 
 * **Corbyn Greenwood** - *main menu, transmitting and receiving, nav switch*
-* **Benjamin Scott** - *main game loop, display module*
+* **Benjamin Scott** - *main game loop, display and lasers modules*
 * **Joint Effort** - *bug fixing, make file, headers, readme*
 
 ## Acknowledgments
