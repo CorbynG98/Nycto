@@ -20,7 +20,7 @@
 
 #define MESSAGE_RATE 10
 #define NUM_LEVELS 3
-#define START_TEXT " BLIND MURDER" //name TBD                               <--Ben
+#define START_TEXT " BLIND MURDER" //name TBD
 #define WAIT_TEXT " WAITING..."
 
 /** Function declarations **/
@@ -35,11 +35,10 @@ void main_menu(char* level, bool* isPlayer1, int position[], char* direction, ui
     // Variables
     int levelChosen = 0;
     int player1Chosen = 0;
-    int youPlayer1 = 0;//isn't this synonymous with isPlayer1                               <--Ben
     char currentMap = 'S';
 
     // Set initial text
-    tinygl_text(START_TEXT);//changed this                                         <--Ben
+    tinygl_text(START_TEXT);
 
     // Main Loop
     // Not using else if as that limits the amount of changes per
@@ -62,7 +61,6 @@ void main_menu(char* level, bool* isPlayer1, int position[], char* direction, ui
             // Data can  be received, get the data and deal with it
             unsigned char received = rec_get_data();
             if (rec_player(received) && !player1Chosen) {
-                youPlayer1 = 0;
                 *isPlayer1 = false;
                 player1Chosen = 1;
                 currentMap = 'W';
@@ -76,7 +74,7 @@ void main_menu(char* level, bool* isPlayer1, int position[], char* direction, ui
             }
         }
 
-        if (nav_shoot() && player1Chosen && youPlayer1) {
+        if (nav_shoot() && player1Chosen && isPlayer1) {
             // Player has selected the current map, current map needs
             // to be selected and loop needs to break.
             transmit_map(currentMap);
@@ -90,17 +88,16 @@ void main_menu(char* level, bool* isPlayer1, int position[], char* direction, ui
             // Someone has pressed the button, make them player 1.
             transmit_player1();
             player1Chosen = 1;
-            youPlayer1 = 1;
             currentMap = 'A';
         }
-        if (nav_getmhorizontal() == 'E' && youPlayer1) {
+        if (nav_getmhorizontal() == 'E' && isPlayer1) {
             // Player moved nav switch east.
             if (currentMap == 'A' + NUM_LEVELS - 1)
                 currentMap = 'A';
             else
                 currentMap += 1;
         }
-        if (nav_getmhorizontal() == 'W' && youPlayer1) {
+        if (nav_getmhorizontal() == 'W' && isPlayer1) {
             // Player moved nav switch west.
             if (currentMap == 'A')
                 currentMap = 'A' + NUM_LEVELS - 1;
@@ -111,6 +108,7 @@ void main_menu(char* level, bool* isPlayer1, int position[], char* direction, ui
     disp_clear_character();
 }
 
+/** Build the level by making the bitmap **/
 void build_level(char map, uint8_t bitmap[], int isChosen) {
     // Where the map gets made
 
@@ -134,6 +132,7 @@ void build_level(char map, uint8_t bitmap[], int isChosen) {
 
 /** Sets the player position on the board **/
 void set_player_pos(int position[], char* direction, bool isPlayer1, char level) {
+    // Check what level was chosen set position accordingly
     if (level == 'A') {
         if (!isPlayer1) {
             set_pos(position, 0, 0);
@@ -164,6 +163,7 @@ void set_player_pos(int position[], char* direction, bool isPlayer1, char level)
 /** Sets the x and y coordinates on the player **/
 void set_pos(int position[], int x, int y)
 {
+    // Set the x and y values
     position[0] = x;
     position[1] = y;
 }
@@ -171,6 +171,7 @@ void set_pos(int position[], int x, int y)
 /** Sets the values in the bitmap **/
 void set_bitmap(uint8_t bitmap[], uint8_t val1, uint8_t val2, uint8_t val3, uint8_t val4, uint8_t val5)
 {
+    // Set the values of the bitmap
     bitmap[0] = val1;
     bitmap[1] = val2;
     bitmap[2] = val3;

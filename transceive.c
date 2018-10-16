@@ -10,7 +10,7 @@
 #include "tinygl.h"
 #include "transceive.h"
 
-#define SETPLAYER1 171 //added constants                                      <--Ben
+#define SETPLAYER1 171
 #define LOSS 172
 #define MAX 255
 
@@ -23,7 +23,7 @@
 /** encodes and transmits the position **/
 void transmit_pos(int position[])
 {
-    // Transmit position
+    // Encode and transmit position
     unsigned char transmit_char = encode_position(position);
     ir_uart_putc(transmit_char);
 }
@@ -97,8 +97,18 @@ void rec_get_enemy(int enemy[], unsigned char input)
         input = input - TINYGL_WIDTH;
         count += 1;
     }
+    // Set the x and y coordinates
     enemy[0] = input;
     enemy[1] = count;
+}
+
+/** Set the laser information **/
+void set_laser(int laser[], int x, int y, char dir)
+{
+    // Set the data to the laser array
+    laser[0] = x;
+    laser[1] = y;
+    laser[2] = dir;
 }
 
 /** Given an array for the position and laser direction, fills in the information
@@ -110,24 +120,28 @@ void rec_get_laser(int laser[], unsigned char input)
     int enemy[2] = {0, 0};
     if (input < (AREA*2)) {
         rec_get_enemy(enemy, input - (AREA*1));
-        laser[0] = enemy[0]; //can make this less repetitive                                       <--Ben
-        laser[1] = enemy[1];
-        laser[2] = 'N';
+        set_laser(laser, enemy[0], enemy[1], 'N');
+        //laser[0] = enemy[0];
+        //laser[1] = enemy[1];
+        //laser[2] = 'N';
     } else if (input < (AREA*3)) {
         rec_get_enemy(enemy, input - (AREA*2));
-        laser[0] = enemy[0];
-        laser[1] = enemy[1];
-        laser[2] = 'E';
+        set_laser(laser, enemy[0], enemy[1], 'E');
+        //laser[0] = enemy[0];
+        //laser[1] = enemy[1];
+        //laser[2] = 'E';
     }  else if (input < (AREA*4)) {
         rec_get_enemy(enemy, input - (AREA*3));
-        laser[0] = enemy[0];
-        laser[1] = enemy[1];
-        laser[2] = 'S';
+        set_laser(laser, enemy[0], enemy[1], 'S');
+        //laser[0] = enemy[0];
+        //laser[1] = enemy[1];
+        //laser[2] = 'S';
     }  else if (input < (AREA*5)) {
         rec_get_enemy(enemy, input - (AREA*4));
-        laser[0] = enemy[0];
-        laser[1] = enemy[1];
-        laser[2] = 'W';
+        set_laser(laser, enemy[0], enemy[1], 'W');
+        //laser[0] = enemy[0];
+        //laser[1] = enemy[1];
+        //laser[2] = 'W';
     }
 
 }
@@ -139,7 +153,7 @@ unsigned char encode_pos_laser(int position[], char direction)
     int x = position[0];
     int y = position[1];
     int z = 0;
-    if (direction == 'N') //could be a switch statement                              <--Ben
+    if (direction == 'N')
         z = 0;
     else if (direction == 'E')
         z = 1;

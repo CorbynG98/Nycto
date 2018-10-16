@@ -41,6 +41,9 @@ int rec_got_data(void);
 /** decode the received data for the enemy position **/
 void rec_get_enemy(int enemy[], unsigned char input);
 
+/** Set the laser information **/
+void set_laser(int laser[], int x, int y, char dir);
+
 /** decode the received data for the enemy position and laser direction **/
 void rec_get_laser(int laser[], unsigned char input);
 
