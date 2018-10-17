@@ -74,7 +74,7 @@ void main_menu(char* level, bool* isPlayer1, int position[], char* direction, ui
             }
         }
 
-        if (nav_shoot() && player1Chosen && isPlayer1) {
+        if (nav_shoot() && player1Chosen && *isPlayer1) {
             // Player has selected the current map, current map needs
             // to be selected and loop needs to break.
             transmit_map(currentMap);
@@ -90,14 +90,14 @@ void main_menu(char* level, bool* isPlayer1, int position[], char* direction, ui
             player1Chosen = 1;
             currentMap = 'A';
         }
-        if (nav_getmhorizontal() == 'E' && isPlayer1) {
+        if (nav_getmhorizontal() == 'E' && *isPlayer1) {
             // Player moved nav switch east.
             if (currentMap == 'A' + NUM_LEVELS - 1)
                 currentMap = 'A';
             else
                 currentMap += 1;
         }
-        if (nav_getmhorizontal() == 'W' && isPlayer1) {
+        if (nav_getmhorizontal() == 'W' && *isPlayer1) {
             // Player moved nav switch west.
             if (currentMap == 'A')
                 currentMap = 'A' + NUM_LEVELS - 1;
