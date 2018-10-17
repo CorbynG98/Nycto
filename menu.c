@@ -157,10 +157,10 @@ void set_player_pos(int position[], char* direction, bool isPlayer1, char level)
     } else if (level == 'D') {
         if (!isPlayer1) {
             set_pos(position, 4, 0);
-            *direction = 'N';
+            *direction = 'W';
         } else {
             set_pos(position, 0, 6);
-            *direction = 'S';
+            *direction = 'E';
         }
     } else if (level == 'E') {
         if (!isPlayer1) {
