@@ -18,9 +18,8 @@
 #include "nav.h"
 #include "disp.h"
 
-#define MESSAGE_RATE 10
 #define NUM_LEVELS 3
-#define START_TEXT " NYCTOPHOBIA" //name TBD
+#define START_TEXT " NYCTO"
 #define WAIT_TEXT " WAITING..."
 
 /** Function declarations **/

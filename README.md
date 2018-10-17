@@ -1,4 +1,4 @@
-# Nyctophobia
+# Nycto
 
 This is an arena shooter game, having multiple arenas to choose
 from. The goal is to find and shoot the other player with your

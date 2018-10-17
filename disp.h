@@ -16,7 +16,7 @@
 #define DISP_LASER_TIME 40 // time to display a laser for
 #define DISP_WIN_FLASH_TIME 80 // time to flash blue for
 #define DISP_NPC_WAIT_MULT 10 // multiple of DISP_LASER_TIME to wait for between shots
-#define MESSAGE_RATE 10
+#define MESSAGE_RATE 13
 
 /** debug function*/
 char getDebugChar(void);
