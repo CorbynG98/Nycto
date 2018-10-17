@@ -80,7 +80,6 @@ void main_menu(char* level, bool* isPlayer1, int position[], char* direction, ui
             transmit_map(currentMap);
             *level = currentMap;
             levelChosen = 1;
-            *isPlayer1 = true;
             build_level(currentMap, bitmap, 1);
             set_player_pos(position, direction, *isPlayer1, *level);
         }
@@ -88,16 +87,17 @@ void main_menu(char* level, bool* isPlayer1, int position[], char* direction, ui
             // Someone has pressed the button, make them player 1.
             transmit_player1();
             player1Chosen = 1;
+            *isPlayer1 = true;
             currentMap = 'A';
         }
-        if (nav_getmhorizontal() == 'E' && *isPlayer1) {
+        if (nav_getmhorizontal() == 'E' && (*isPlayer1)) {
             // Player moved nav switch east.
             if (currentMap == 'A' + NUM_LEVELS - 1)
                 currentMap = 'A';
             else
                 currentMap += 1;
         }
-        if (nav_getmhorizontal() == 'W' && *isPlayer1) {
+        if (nav_getmhorizontal() == 'W' && (*isPlayer1)) {
             // Player moved nav switch west.
             if (currentMap == 'A')
                 currentMap = 'A' + NUM_LEVELS - 1;
