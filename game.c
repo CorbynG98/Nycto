@@ -20,7 +20,7 @@
 #include "menu.h"
 
 #define NPC_WAIT_TIME 200 //time between npc laser bursts
-#define END_WAIT_TIME 200 //time to display players before end
+#define END_WAIT_TIME 1500 //time to display players before end
 
 void move (int position[2], char* direction, uint8_t bitmap[5], bool* gameLost, int* npc_counter);
 void interpret_data (int position[2], uint8_t bitmap[5], bool* gameWon, bool* gameLost);
@@ -66,6 +66,7 @@ int main (void)
                 disp_game_lose();
             } else if (end_counter % DISP_TIME == 0){
                 transmit_pos(position);
+                disp_add_self(position);
                 end_counter++;
             } else {
                 end_counter++;
@@ -75,6 +76,7 @@ int main (void)
                 disp_game_win();
             } else if (end_counter % DISP_TIME == DISP_TIME/2){
                 transmit_pos(position);
+                disp_add_self(position);
                 end_counter++;
             } else {
                 end_counter++;
@@ -143,7 +145,7 @@ void interpret_data (int position[2], uint8_t bitmap[5], bool* gameWon, bool* ga
         int laser[3];
         rec_get_laser(laser, data);//convert laser data to three integers
         disp_add_enemy_laser(laser);
-        if (laser_hit_self(laser, position, bitmap, false)) {
+        if (laser_hit_self(laser, position, bitmap, false) && !*gameWon) {
             //if hit by enemy laser, we lose
             transmit_loss();
             *gameLost = true;
