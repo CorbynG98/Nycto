@@ -29,7 +29,7 @@ Reset the board if there are problems.
 - Navswitch directions to control player movement
 - Press navswitch in to shoot the laser
 
-#### Menu
+##### Menu:
 
 On the first screen (with the title), one of the two
 boards must press the nav switch button in, this will set them
@@ -39,15 +39,15 @@ navswitch left and/or right. Once a level is selected by
 pressing the navswitch in, the level is transmitted to Player
 Two, and the game begins.
 
-#### Gameplay
+##### Gameplay:
 
 When the game first starts it may look like nothing has happened,
-but do not fear - you are merely invisible. Just bump into a wall
+but do not fear - you are *merely invisible*. Just bump into a wall
 or shoot and you will appear for a moment (on both boards). The 
 goal is to try to locate the other player and shoot them before 
 they do the same to you.
 
-#### End Screen
+##### End Screen:
 
 When the game is over, it will freeze for a moment, showing both
 players. Then on the winning player it will show 'WIN' and flash 
