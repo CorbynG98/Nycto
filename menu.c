@@ -20,7 +20,7 @@
 
 #define MESSAGE_RATE 10
 #define NUM_LEVELS 3
-#define START_TEXT " BLIND MURDER" //name TBD
+#define START_TEXT " NYCTOPHOBIA" //name TBD
 #define WAIT_TEXT " WAITING..."
 
 /** Function declarations **/

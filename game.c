@@ -73,7 +73,7 @@ int main (void)
         } else if (gameWon) {
             if (end_counter >= END_WAIT_TIME) {
                 disp_game_win();
-            } else if (end_counter % DISP_TIME == 15){
+            } else if (end_counter % DISP_TIME == DISP_TIME/2){
                 transmit_pos(position);
                 end_counter++;
             } else {
