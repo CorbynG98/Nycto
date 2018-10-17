@@ -42,7 +42,7 @@ Two, and the game begins.
 ##### Gameplay:
 
 When the game first starts it may look like nothing has happened,
-but do not fear - you are ***merely invisible***. Just bump into a wall
+but do not fear - you are *merely invisible*. Just bump into a wall
 or shoot and you will appear for a moment (on both boards). The 
 goal is to try to locate the other player and shoot them before 
 they do the same to you.
