@@ -11,7 +11,7 @@
 #include <stdint.h>
 
 //customization constants
-#define PACER_RATE 250
+#define PACER_RATE 350
 #define DISP_TIME 60 //time to display a player for
 #define DISP_LASER_TIME 40 // time to display a laser for
 #define DISP_WIN_FLASH_TIME 80 // time to flash blue for

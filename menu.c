@@ -18,7 +18,7 @@
 #include "nav.h"
 #include "disp.h"
 
-#define NUM_LEVELS 3
+#define NUM_LEVELS 5
 #define START_TEXT " NYCTO"
 #define WAIT_TEXT " WAITING..."
 
@@ -89,14 +89,14 @@ void main_menu(char* level, bool* isPlayer1, int position[], char* direction, ui
             *isPlayer1 = true;
             currentMap = 'A';
         }
-        if (nav_getmhorizontal() == 'E' && (*isPlayer1)) {
+        if (nav_getmhorizontal() == 'E' && (*isPlayer1) && currentMap != 'S') {
             // Player moved nav switch east.
             if (currentMap == 'A' + NUM_LEVELS - 1)
                 currentMap = 'A';
             else
                 currentMap += 1;
         }
-        if (nav_getmhorizontal() == 'W' && (*isPlayer1)) {
+        if (nav_getmhorizontal() == 'W' && (*isPlayer1) && currentMap != 'S') {
             // Player moved nav switch west.
             if (currentMap == 'A')
                 currentMap = 'A' + NUM_LEVELS - 1;
@@ -124,6 +124,12 @@ void build_level(char map, uint8_t bitmap[], int isChosen) {
     } else if (map == 'C') {
         // Build map C
         set_bitmap(bitmap, 0x00, 0x22, 0x2A, 0x22, 0x00);
+    } else if (map == 'D') {
+        // Build map C
+        set_bitmap(bitmap, 0x28, 0x28, 0x22, 0x0A, 0x0A);
+    } else if (map == 'E') {
+        // Build map C
+        set_bitmap(bitmap, 0x00, 0x3A, 0x22, 0x2E, 0x00);
     }
 
     disp_bitmap(bitmap);
@@ -132,15 +138,7 @@ void build_level(char map, uint8_t bitmap[], int isChosen) {
 /** Sets the player position on the board **/
 void set_player_pos(int position[], char* direction, bool isPlayer1, char level) {
     // Check what level was chosen set position accordingly
-    if (level == 'A') {
-        if (!isPlayer1) {
-            set_pos(position, 0, 0);
-            *direction = 'S';
-        } else {
-            set_pos(position, 4, 6);
-            *direction = 'N';
-        }
-    } else if (level == 'B') {
+    if (level == 'A' || level == 'B') {
         if (!isPlayer1) {
             set_pos(position, 0, 0);
             *direction = 'S';
@@ -154,6 +152,22 @@ void set_player_pos(int position[], char* direction, bool isPlayer1, char level)
             *direction = 'E';
         } else {
             set_pos(position, 3, 6);
+            *direction = 'W';
+        }
+    } else if (level == 'D') {
+        if (!isPlayer1) {
+            set_pos(position, 4, 0);
+            *direction = 'N';
+        } else {
+            set_pos(position, 0, 6);
+            *direction = 'S';
+        }
+    } else if (level == 'E') {
+        if (!isPlayer1) {
+            set_pos(position, 1, 2);
+            *direction = 'E';
+        } else {
+            set_pos(position, 3, 4);
             *direction = 'W';
         }
     }
