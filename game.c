@@ -20,7 +20,7 @@
 #include "menu.h"
 
 #define NPC_WAIT_TIME 200 //time between npc laser bursts
-#define END_WAIT_TIME 1500 //time to display players before end
+#define END_WAIT_TIME 1000 //time to display players before end
 
 void move (int position[2], char* direction, uint8_t bitmap[5], bool* gameLost, int* npc_counter);
 void interpret_data (int position[2], uint8_t bitmap[5], bool* gameWon, bool* gameLost);
