@@ -7,19 +7,15 @@ laser. The catch however, is that each of you are only visible
 
 ### Getting started
 
-Make sure to have cloned the ENCE260 funkit repository. This
-repo has all the required drivers, fonts, utils, etc. required
-to run this game on the Electrical Computer Engineering UC Fun
-Kit 4.
+Make sure to have a University of Canterbury FunKit Microcontroller
+or a controller to the same spec. This program will not work on any
+board that is not the the spec mentioned above.
 
 ### Installing
 
-Clone the repository for this game into a folder in the
-assignment folder. This is located in the previously cloned
-directory, ence260-ucfk4. For example, this README should be
-located at ence260-ucfk4/assignment/folder-name/README.md
+Clone the repository for this somewhere to your local machine.
 
-Now open the terminal and traverse to this directory.
+Now open the terminal and traverse to the assignment/game folder.
 With the ucfunkit plugged into the computer, Enter the command
 'make program' (no quotes).
 Reset the board if there are problems.
